@@ -1,4 +1,6 @@
 from typing import Any, Dict, cast
+
+import wandb
 from framework3 import Container
 from framework3.base import BaseMetric
 from framework3.base.base_clases import BaseFilter, BasePlugin
@@ -152,8 +154,8 @@ class WandbOptimizer(BaseOptimizer):
         match pipeline.fit(x, y):
             case None:
                 losses = pipeline.evaluate(x, y, pipeline.predict(x))
-
-                loss = losses.get(self.scorer.__class__.__name__, 0.0)
+                loss = losses.pop(self.scorer.__class__.__name__, 0.0)
+                wandb.log(dict(losses))  # type: ignore[attr-defined]
 
                 return {self.scorer.__class__.__name__: float(loss)}
             case float() as loss:

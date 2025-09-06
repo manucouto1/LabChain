@@ -70,6 +70,8 @@ class WandbSweepManager:
             case {"filters": filters, **r}:
                 for filter_config in filters:
                     WandbSweepManager.get_grid(filter_config, config)
+            case {"filter": filter, **r}:
+                WandbSweepManager.get_grid(filter, config)
             case {"pipeline": pipeline, **r}:  # noqa: F841
                 WandbSweepManager.get_grid(pipeline, config)
             case p_params:
