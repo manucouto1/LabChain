@@ -134,7 +134,7 @@ class F3Pipeline(SequentialPipeline):
             print(f"Error during pipeline execution: {e}")
             raise e
 
-    def fit(self, x: XYData, y: Optional[XYData]) -> None | float:
+    def fit(self, x: XYData, y: Optional[XYData]) -> None | float | dict:
         """
         Fit the pipeline to the input data.
 

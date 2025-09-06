@@ -137,7 +137,7 @@ class Cached(BaseFilter):
         self.filter.init()
         super().init()
 
-    def _pre_fit_wrapp(self, x: XYData, y: Optional[XYData]) -> float | None:
+    def _pre_fit_wrapp(self, x: XYData, y: Optional[XYData]) -> float | None | dict:
         """
         Wrapper method for the pre-fit stage.
 

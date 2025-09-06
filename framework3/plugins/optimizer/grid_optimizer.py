@@ -183,11 +183,11 @@ class GridOptimizer(BaseOptimizer):
             match pipeline.fit(x, y):
                 case None:
                     losses = pipeline.evaluate(x, y, pipeline.predict(x))
-
                     score = losses.get(self.scorer.__class__.__name__, 0.0)
-
                 case float() as score:
                     pass
+                case dict() as losses:
+                    score = losses.get(self.scorer.__class__.__name__, 0.0)
                 case _:
                     raise ValueError("Unexpected return type from pipeline.fit()")
 

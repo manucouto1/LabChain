@@ -160,6 +160,10 @@ class WandbOptimizer(BaseOptimizer):
                 return {self.scorer.__class__.__name__: float(loss)}
             case float() as loss:
                 return {self.scorer.__class__.__name__: loss}
+            case dict() as losses:
+                loss = losses.pop(self.scorer.__class__.__name__, 0.0)
+                wandb.log(dict(losses))  # type: ignore[attr-defined]
+                return {self.scorer.__class__.__name__: loss}
             case _:
                 raise ValueError("Unexpected return type from pipeline.fit()")
 

@@ -84,7 +84,7 @@ class StratifiedKFoldSplitter(BaseSplitter):
         self.pipeline = pipeline
         self.pipeline.verbose(False)
 
-    def fit(self, x: XYData, y: XYData | None) -> Optional[float]:
+    def fit(self, x: XYData, y: XYData | None) -> Optional[float | dict]:
         """
         Perform Stratified K-Fold cross-validation on the given data.
 
@@ -111,7 +111,7 @@ class StratifiedKFoldSplitter(BaseSplitter):
         X = x.value
         Y = y.value
 
-        losses = []
+        losses: dict = {}
         splits = self._skf.split(X, Y)
         for train_idx, val_idx in tqdm(
             splits, total=self._skf.get_n_splits(X, Y), disable=not self._verbose
@@ -131,11 +131,14 @@ class StratifiedKFoldSplitter(BaseSplitter):
             _y = pipeline.predict(X_val)
 
             loss = pipeline.evaluate(X_val, y_val, _y)
-            losses.append(float(next(iter(loss.values()))))
+            for metric, value in loss.items():
+                v = losses.get(metric, [])
+                v.append(value)
+                losses[metric] = v
 
             self.clear_memory()
 
-        return float(np.mean(losses) if losses else 0.0)
+        return dict(map(lambda item: (item[0], np.mean(item[1])), losses.items()))
 
     def start(
         self, x: XYData, y: Optional[XYData], X_: Optional[XYData]

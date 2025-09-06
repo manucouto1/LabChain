@@ -150,7 +150,7 @@ class BaseSplitter(BaseFilter):
         """
         ...
 
-    def _pre_fit_wrapp(self, x: XYData, y: Optional[XYData]) -> float | None:
+    def _pre_fit_wrapp(self, x: XYData, y: Optional[XYData]) -> float | None | dict:
         """
         Wrapper method for pre-fitting.
 

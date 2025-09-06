@@ -648,7 +648,7 @@ class BaseFilter(BasePlugin):
         except Exception:
             raise ValueError("Trainable filter model not trained or loaded")
 
-    def _pre_fit_wrapp(self, x: XYData, y: Optional[XYData]) -> Optional[float]:
+    def _pre_fit_wrapp(self, x: XYData, y: Optional[XYData]) -> Optional[float | dict]:
         """
         Wrapper method for the fit function.
 
@@ -712,7 +712,7 @@ class BaseFilter(BasePlugin):
         self.__dict__["fit"] = self._pre_fit_wrapp
         self.__dict__["predict"] = self._pre_predict_wrapp
 
-    def fit(self, x: XYData, y: Optional[XYData]) -> Optional[float]:
+    def fit(self, x: XYData, y: Optional[XYData]) -> Optional[float | dict]:
         """
         Method for fitting the filter to the data.
 

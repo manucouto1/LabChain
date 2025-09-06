@@ -1,8 +1,9 @@
 import optuna
 
 from typing import Any, Callable, Dict, Sequence, Union, cast
+from framework3 import F1
 from framework3.container import Container
-from framework3.base import BasePlugin, XYData
+from framework3.base import BaseMetric, BasePlugin, XYData
 
 from rich import print
 
@@ -69,6 +70,7 @@ class OptunaOptimizer(BaseOptimizer):
         pipeline: BaseFilter | None = None,
         study_name: str | None = None,
         storage: str | None = None,
+        scorer: BaseMetric = F1(),
     ):
         """
         Initialize the OptunaOptimizer.
@@ -90,6 +92,7 @@ class OptunaOptimizer(BaseOptimizer):
         self.n_trials = n_trials
         self.load_if_exists = load_if_exists
         self.reset_study = reset_study
+        self.scorer = scorer
 
     def optimize(self, pipeline: BaseFilter):
         """
@@ -227,17 +230,12 @@ class OptunaOptimizer(BaseOptimizer):
 
                 match pipeline.fit(x, y):
                     case None:
-                        return float(
-                            next(
-                                iter(
-                                    pipeline.evaluate(
-                                        x, y, pipeline.predict(x)
-                                    ).values()
-                                )
-                            )
-                        )
+                        metrics = pipeline.evaluate(x, y, pipeline.predict(x))
+                        return float(metrics.get(self.scorer.__class__.__name__, 0.0))
                     case float() as loss:
                         return loss
+                    case dict() as losses:
+                        return float(losses.get(self.scorer.__class__.__name__, 0.0))
                     case _:
                         raise ValueError("Unsupported type in pipeline.fit")
 
