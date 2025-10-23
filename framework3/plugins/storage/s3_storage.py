@@ -119,6 +119,8 @@ class S3Storage(BaseStorage):
         Returns:
             str: The file name if successful.
         """
+        prefix = f"{context}/" if context and not context.endswith("/") else context
+
         if type(file) is not io.BytesIO:
             binary = pickle.dumps(file)
             stream = io.BytesIO(binary)
@@ -130,7 +132,7 @@ class S3Storage(BaseStorage):
             print(f" \t * Object size {sys.getsizeof(stream) * 1e-9} GBs ")
 
         self._client.put_object(
-            Body=stream, Bucket=self.bucket, Key=f"{context}/{file_name}"
+            Body=stream, Bucket=self.bucket, Key=f"{prefix}{file_name}"
         )
 
         if self._verbose:
@@ -176,7 +178,8 @@ class S3Storage(BaseStorage):
         Returns:
             bytes: The content of the file.
         """
-        obj = self._client.get_object(Bucket=self.bucket, Key=hashcode)
+        prefix = f"{context}/" if context and not context.endswith("/") else context
+        obj = self._client.get_object(Bucket=self.bucket, Key=f"{prefix}{hashcode}")
         return obj["Body"].read()
 
     def check_if_exists(self, hashcode: str, context: str) -> bool:
@@ -191,7 +194,8 @@ class S3Storage(BaseStorage):
             bool: True if the file exists, False otherwise.
         """
         try:
-            self._client.head_object(Bucket=self.bucket, Key=f"{context}/{hashcode}")
+            prefix = f"{context}/" if context and not context.endswith("/") else context
+            self._client.head_object(Bucket=self.bucket, Key=f"{prefix}{hashcode}")
         except ClientError as e:
             if e.response["Error"]["Code"] == "404":
                 return False
@@ -211,7 +215,8 @@ class S3Storage(BaseStorage):
         Returns:
             Any: The deserialized content of the file.
         """
-        obj = self._client.get_object(Bucket=self.bucket, Key=f"{context}/{hashcode}")
+        prefix = f"{context}/" if context and not context.endswith("/") else context
+        obj = self._client.get_object(Bucket=self.bucket, Key=f"{prefix}{hashcode}")
         return pickle.loads(obj["Body"].read())
 
     def delete_file(self, hashcode: str, context: str) -> None:
@@ -226,8 +231,10 @@ class S3Storage(BaseStorage):
             Exception: If the file couldn't be deleted.
             FileExistsError: If the file doesn't exist in the bucket.
         """
+
         if self.check_if_exists(hashcode, context):
-            self._client.delete_object(Bucket=self.bucket, Key=f"{context}/{hashcode}")
+            prefix = f"{context}/" if context and not context.endswith("/") else context
+            self._client.delete_object(Bucket=self.bucket, Key=f"{prefix}{hashcode}")
             if self.check_if_exists(hashcode, context):
                 raise Exception("Couldn't delete file")
             else:
