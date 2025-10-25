@@ -401,10 +401,17 @@ class BasePlugin(ABC):
                     else:
                         level_params[k] = v
                 elif isinstance(v, list):
-                    level_params[k] = [
-                        BasePlugin.build_from_dump(i, factory) if "clazz" in i else i
-                        for i in v
-                    ]
+                    items: List[Any] = []
+                    for i in v:
+                        if isinstance(i, dict):
+                            if "clazz" in i:
+                                items.append(BasePlugin.build_from_dump(i, factory))
+                            else:
+                                items.append(i)
+                        else:
+                            items.append(i)
+
+                    level_params[k] = items
                 else:
                     level_params[k] = v
             return level_clazz(**level_params)
