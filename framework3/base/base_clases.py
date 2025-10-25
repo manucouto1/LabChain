@@ -389,6 +389,7 @@ class BasePlugin(ABC):
         Returns:
             BasePlugin | Type[BasePlugin]: The reconstructed plugin instance or class.
         """
+
         level_clazz: Type[BasePlugin] = factory[dump_dict["clazz"]]
 
         if "params" in dump_dict:
@@ -401,7 +402,8 @@ class BasePlugin(ABC):
                         level_params[k] = v
                 elif isinstance(v, list):
                     level_params[k] = [
-                        BasePlugin.build_from_dump(i, factory) for i in v
+                        BasePlugin.build_from_dump(i, factory) if "clazz" in i else i
+                        for i in v
                     ]
                 else:
                     level_params[k] = v
