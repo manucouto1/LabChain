@@ -213,7 +213,7 @@ class Cached(BaseFilter):
         if (
             not self._storage.check_if_exists(
                 hashcode="model",
-                context=f"{self._storage.get_root_path()}/{self.filter._m_path}",
+                context=f"{self._storage.get_root_path()}{self.filter._m_path}",
             )
             or self.overwrite
         ):
@@ -229,7 +229,7 @@ class Cached(BaseFilter):
                 self._storage.upload_file(
                     file=pickle.dumps(self.filter),
                     file_name="model",
-                    context=f"{self._storage.get_root_path()}/{self.filter._m_path}",
+                    context=f"{self._storage.get_root_path()}{self.filter._m_path}",
                 )
         else:
             if self._verbose:
@@ -238,7 +238,7 @@ class Cached(BaseFilter):
             self._lambda_filter = lambda: cast(
                 BaseFilter,
                 self._storage.download_file(
-                    "model", f"{self._storage.get_root_path()}/{self.filter._m_path}"
+                    "model", f"{self._storage.get_root_path()}{self.filter._m_path}"
                 ),
             )
 
@@ -259,7 +259,7 @@ class Cached(BaseFilter):
 
         if (
             not self._storage.check_if_exists(
-                x._hash, context=f"{self._storage.get_root_path()}/{x._path}"
+                x._hash, context=f"{self._storage.get_root_path()}{x._path}"
             )
             or self.overwrite
         ):
@@ -285,7 +285,7 @@ class Cached(BaseFilter):
                 self._storage.upload_file(
                     file=pickle.dumps(value.value),
                     file_name=x._hash,
-                    context=f"{self._storage.get_root_path()}/{x._path}",
+                    context=f"{self._storage.get_root_path()}{x._path}",
                 )
         else:
             if self._verbose:
@@ -297,7 +297,7 @@ class Cached(BaseFilter):
                 _value=lambda: cast(
                     VData,
                     self._storage.download_file(
-                        x._hash, f"{self._storage.get_root_path()}/{x._path}"
+                        x._hash, f"{self._storage.get_root_path()}{x._path}"
                     ),
                 ),
             )

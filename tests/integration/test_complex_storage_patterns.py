@@ -34,7 +34,7 @@ def test_data():
 @pytest.fixture
 def mock_storage():
     storage = MagicMock(spec=LocalStorage)
-    storage.get_root_path.return_value = "/root"
+    storage.get_root_path.return_value = "root/"
     return storage
 
 
@@ -69,7 +69,7 @@ def test_cached_pipeline_storage_interactions(store_cached_pipelines, test_data)
     filter._pre_predict(x)
 
     mock_storage.upload_file.assert_any_call(
-        file=ANY, context=f"/root/{m_path}", file_name="model"
+        file=ANY, context=f"root/{m_path}", file_name="model"
     )
 
 

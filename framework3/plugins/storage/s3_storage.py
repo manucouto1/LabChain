@@ -73,6 +73,7 @@ class S3Storage(BaseStorage):
         access_key_id: str,
         access_key: str,
         endpoint_url: str | None = None,
+        storage_path: str = "",
     ):
         """
         Initialize the S3Storage.
@@ -94,6 +95,9 @@ class S3Storage(BaseStorage):
             use_ssl=True,
         )
         self.bucket = bucket
+        self.storage_path = (
+            storage_path if storage_path.endswith("/") else f"{storage_path}/"
+        )
 
     def get_root_path(self) -> str:
         """
@@ -102,7 +106,7 @@ class S3Storage(BaseStorage):
         Returns:
             str: The name of the S3 bucket.
         """
-        return self.bucket
+        return self.storage_path
 
     def upload_file(
         self, file: object, file_name: str, context: str, direct_stream: bool = False
@@ -161,7 +165,7 @@ class S3Storage(BaseStorage):
             if "Contents" in page:
                 for obj in page["Contents"]:
                     # Remove the prefix from the key to get the relative path
-                    relative_path = obj["Key"][len(prefix) :]
+                    relative_path = obj["Key"]
                     if relative_path:  # Ignore the folder itself
                         file_list.append(relative_path)
 

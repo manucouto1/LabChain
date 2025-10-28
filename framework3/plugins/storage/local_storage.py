@@ -63,7 +63,7 @@ class LocalStorage(BaseStorage):
         delete_file(hashcode: str, context: str) -> None: Delete a file from the specified context.
     """
 
-    def __init__(self, storage_path: str = "cache"):
+    def __init__(self, storage_path: str = "cache/"):
         """
         Initialize the LocalStorage.
 
@@ -72,7 +72,9 @@ class LocalStorage(BaseStorage):
         """
         super().__init__()
         self.storage_path = storage_path
-        self._base_path = storage_path
+        self._base_path = (
+            storage_path if storage_path.endswith("/") else f"{storage_path}/"
+        )
 
     def get_root_path(self) -> str:
         """
@@ -99,10 +101,11 @@ class LocalStorage(BaseStorage):
             str | None: The file name if successful, None otherwise.
         """
         try:
-            Path(context).mkdir(parents=True, exist_ok=True)
+            prefix = f"{context}/" if context and not context.endswith("/") else context
+            Path(prefix).mkdir(parents=True, exist_ok=True)
             if self._verbose:
-                print(f"\t * Saving in local path: {context}/{file_name}")
-            pickle.dump(file, open(f"{context}/{file_name}", "wb"))
+                print(f"\t * Saving in local path: {prefix}{file_name}")
+            pickle.dump(file, open(f"{prefix}{file_name}", "wb"))
             if self._verbose:
                 print("\t * Saved !")
             return file_name
@@ -136,8 +139,9 @@ class LocalStorage(BaseStorage):
         Raises:
             FileNotFoundError: If the file is not found in the specified context.
         """
-        if hashcode in os.listdir(context):
-            return open(f"{context}/{hashcode}", "rb")
+        prefix = f"{context}/" if context and not context.endswith("/") else context
+        if hashcode in os.listdir(prefix):
+            return open(f"{prefix}{hashcode}", "rb")
         else:
             raise FileNotFoundError(f"Couldn't find file {hashcode} in path {context}")
 
@@ -188,7 +192,8 @@ class LocalStorage(BaseStorage):
         Raises:
             FileExistsError: If the file does not exist in the specified context.
         """
-        if os.path.exists(f"{context}/{hashcode}"):
-            os.remove(f"{context}/{hashcode}")
+        prefix = f"{context}/" if context and not context.endswith("/") else context
+        if os.path.exists(f"{prefix}{hashcode}"):
+            os.remove(f"{prefix}{hashcode}")
         else:
             raise FileExistsError("No existe en la carpeta")
