@@ -183,15 +183,18 @@ class GridOptimizer(BaseOptimizer):
             match pipeline.fit(x, y):
                 case None:
                     losses = pipeline.evaluate(x, y, pipeline.predict(x))
-                    score = losses.get(self.scorer.__class__.__name__, 0.0)
+                    score = losses.pop(self.scorer.__class__.__name__, 0.0)
+                    score_data = {"score": score, **losses}
                 case float() as score:
+                    score_data = {"score": score}
                     pass
                 case dict() as losses:
-                    score = losses.get(self.scorer.__class__.__name__, 0.0)
+                    score = losses.pop(self.scorer.__class__.__name__, 0.0)
+                    score_data = {"score": score, **losses}
                 case _:
                     raise ValueError("Unexpected return type from pipeline.fit()")
 
-            results.append({**param_dict, "score": float(score)})
+            results.append({**param_dict, **score_data})
 
         # Create DataFrame with all combinations and scores
         self._results = pd.DataFrame(results)

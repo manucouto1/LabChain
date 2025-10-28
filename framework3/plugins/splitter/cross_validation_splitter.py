@@ -163,7 +163,7 @@ class KFoldSplitter(BaseSplitter):
             map(lambda item: (f"{item[0]}_std", np.std(item[1])), losses.items())
         )
 
-        return means.update(stds)
+        return means | stds
 
     def start(
         self, x: XYData, y: Optional[XYData], X_: Optional[XYData]
