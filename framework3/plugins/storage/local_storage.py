@@ -49,8 +49,7 @@ class LocalStorage(BaseStorage):
         ```
 
     Attributes:
-        storage_path (str): The base path for storage operations.
-        _base_path (str): The full path to the storage directory.
+        storage_path (str): The full path to the storage directory.
 
     Methods:
         get_root_path() -> str: Get the root path of the storage.
@@ -71,8 +70,7 @@ class LocalStorage(BaseStorage):
             storage_path (str, optional): The base path for storage. Defaults to 'cache'.
         """
         super().__init__()
-        self.storage_path = storage_path
-        self._base_path = (
+        self.storage_path = (
             storage_path
             if storage_path.endswith("/") or storage_path == ""
             else f"{storage_path}/"
@@ -85,7 +83,7 @@ class LocalStorage(BaseStorage):
         Returns:
             str: The full path to the storage directory.
         """
-        return self._base_path
+        return self.storage_path
 
     def upload_file(
         self, file, file_name: str, context: str, direct_stream: bool = False

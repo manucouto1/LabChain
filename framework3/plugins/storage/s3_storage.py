@@ -127,11 +127,13 @@ class S3Storage(BaseStorage):
         """
         prefix = f"{context}/" if context and not context.endswith("/") else context
 
-        if type(file) is not io.BytesIO:
-            binary = pickle.dumps(file)
-            stream = io.BytesIO(binary)
-        else:
+        if isinstance(file, (bytes, bytearray)):
+            stream = io.BytesIO(file)
+        elif isinstance(file, io.BytesIO):
             stream = file
+        else:
+            stream = io.BytesIO(pickle.dumps(file))
+
         if self._verbose:
             print("- Binary prepared!")
             print("- Stream ready!")

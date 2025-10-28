@@ -138,7 +138,12 @@ class StratifiedKFoldSplitter(BaseSplitter):
 
             self.clear_memory()
 
-        return dict(map(lambda item: (item[0], np.mean(item[1])), losses.items()))
+        means = dict(map(lambda item: (item[0], np.mean(item[1])), losses.items()))
+        stds = dict(
+            map(lambda item: (f"{item[0]}_std", np.std(item[1])), losses.items())
+        )
+
+        return means.update(stds)
 
     def start(
         self, x: XYData, y: Optional[XYData], X_: Optional[XYData]
