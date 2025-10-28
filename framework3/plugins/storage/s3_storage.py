@@ -96,7 +96,9 @@ class S3Storage(BaseStorage):
         )
         self.bucket = bucket
         self.storage_path = (
-            storage_path if storage_path.endswith("/") else f"{storage_path}/"
+            storage_path
+            if storage_path.endswith("/") or storage_path == ""
+            else f"{storage_path}/"
         )
 
     def get_root_path(self) -> str:
