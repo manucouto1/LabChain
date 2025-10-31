@@ -162,8 +162,9 @@ class KFoldSplitter(BaseSplitter):
         stds = dict(
             map(lambda item: (f"{item[0]}_std", np.std(item[1])), losses.items())
         )
+        scores = dict(map(lambda item: (f"{item[0]}_scores", item[1]), losses.items()))
 
-        return means | stds
+        return means | stds | scores
 
     def start(
         self, x: XYData, y: Optional[XYData], X_: Optional[XYData]

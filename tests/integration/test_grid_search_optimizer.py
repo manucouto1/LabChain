@@ -66,7 +66,8 @@ def test_pipeline_with_grid_search_and_splitter(splitter_class):
     pipeline.fit(X, y)
 
     # Check that 2 folds were evaluated
-    assert len(list(pipeline._results.items())) == 7
+    print(pipeline._results)
+    assert len(list(pipeline._results.items())) == 10
 
     # Predict on training data (sanity check)
     prediction = pipeline.predict(x=X)
