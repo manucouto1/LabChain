@@ -18,6 +18,83 @@ from framework3.plugins.metrics.classification import XYData
 from framework3.plugins.splitter.cross_validation_splitter import KFoldSplitter
 
 
+from framework3.utils.wandb import WandbSweepManager
+from framework3.base import BaseFilter, XYData, BaseMetric
+import numpy as np
+
+
+class DummyFilter(BaseFilter):
+    def __init__(self, param_a: float = 0.5, param_b: float = 1.0, **kwargs):
+        super().__init__(**kwargs)
+        self.param_a = param_a
+        self.param_b = param_b
+
+        self._grid = {
+            "param_a": {
+                "distribution": "uniform",
+                "min": 0.1,
+                "max": 0.9,
+            },
+            "param_b": {
+                "distribution": "log_uniform_values",
+                "min": 1e-3,
+                "max": 1.0,
+            },
+        }
+
+    def fit(self, x, y):
+        pass
+
+    def predict(self, x):
+        return XYData.mock(np.random.rand(len(x.value)))
+
+
+class DummyMetric(BaseMetric):
+    higher_better = True
+
+    def evaluate(
+        self, x_data: XYData, y_true: XYData | None, y_pred: XYData
+    ) -> float | np.ndarray:
+        return float(np.random.rand())
+
+
+def test_bayesian_sweep():
+    """Test that Bayesian sweep config is generated correctly."""
+
+    pipeline = DummyFilter()
+    scorer = DummyMetric()
+    x = XYData.mock(np.random.rand(100, 10))
+    y = XYData.mock(np.random.rand(100))
+
+    manager = WandbSweepManager()
+
+    # Generate config (don't actually create sweep)
+    sweep_config = manager.generate_config_for_pipeline(pipeline)
+    print(sweep_config)
+    sweep_config["method"] = "bayes"
+    sweep_config["run_cap"] = 10
+
+    # Assertions
+    assert sweep_config["method"] == "bayes"
+    assert sweep_config["run_cap"] == 10
+
+    params = sweep_config["parameters"]["filters"]["parameters"]["DummyFilter"][
+        "parameters"
+    ]
+
+    # Check param_a (uniform)
+    assert params["param_a"]["distribution"] == "uniform"
+    assert params["param_a"]["min"] == 0.1
+    assert params["param_a"]["max"] == 0.9
+
+    # Check param_b (log_uniform_values)
+    assert params["param_b"]["distribution"] == "log_uniform_values"
+    assert params["param_b"]["min"] == 1e-3
+    assert params["param_b"]["max"] == 1.0
+
+    print("✅ Test passed: Bayesian config generated correctly")
+
+
 def test_wandb_pipeline_init_raises_value_error():
     from framework3.base import BaseMetric
 

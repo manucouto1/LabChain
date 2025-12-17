@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Literal
+from typing import Any, Callable, Dict, List, Literal, Optional
 import wandb
 from rich import print
 from framework3.base import BaseMetric, XYData, BaseFilter
@@ -80,13 +80,12 @@ class WandbSweepManager:
                     for param, value in aux["_grid"].items():
                         print(f"categorical param: {param}: {value}")
                         p_params.update({param: value})
-                        match type(value):
-                            case list():
-                                f_config[param] = {"values": value}
-                            case dict():
-                                f_config[param] = value
-                            case _:
-                                f_config[param] = {"values": value}
+                        if isinstance(value, list):
+                            f_config[param] = {"values": value}
+                        elif isinstance(value, dict):
+                            f_config[param] = value
+                        else:
+                            f_config[param] = {"value": value}
                     if len(f_config) > 0:
                         config["parameters"]["filters"]["parameters"][
                             str(aux["clazz"])
@@ -122,6 +121,9 @@ class WandbSweepManager:
         scorer: BaseMetric,
         x: XYData,
         y: XYData | None = None,
+        method: Literal["grid", "random", "bayes"] = "grid",
+        n_trials: Optional[int] = None,
+        early_terminate: Optional[Dict[str, Any]] = None,
     ) -> str:
         """
         Create a new sweep in Weights & Biases.
@@ -132,23 +134,62 @@ class WandbSweepManager:
             scorer (BaseMetric): The metric used to evaluate the pipeline.
             x (XYData): The input data.
             y (XYData | None): The target data (optional).
+            method (Literal["grid", "random", "bayes"]): Search method.
+                - "grid": Exhaustive grid search (default antes)
+                - "random": Random search
+                - "bayes": Bayesian optimization (RECOMMENDED for DL)
+            n_trials (Optional[int]): Number of trials to run (for random/bayes).
+                If None and method="grid", runs all combinations.
+            early_terminate (Optional[Dict[str, Any]]): Early termination config.
+                Example: {"type": "hyperband", "min_iter": 5}
 
         Returns:
             str: The ID of the created sweep.
+
+        Examples:
+            >>> # Bayesian optimization (recommended)
+            >>> sweep_id = manager.create_sweep(
+            ...     pipeline, "my_project", scorer, x, y,
+            ...     method="bayes",
+            ...     n_trials=20,
+            ...     early_terminate={"type": "hyperband", "min_iter": 5}
+            ... )
+
+            >>> # Grid search (exhaustive, backward compatible)
+            >>> sweep_id = manager.create_sweep(
+            ...     pipeline, "my_project", scorer, x, y,
+            ...     method="grid"
+            ... )
         """
         sweep_config = WandbSweepManager.generate_config_for_pipeline(pipeline)
-        sweep_config["method"] = "grid"
+
+        # ✅ NUEVO: Set method
+        sweep_config["method"] = method
+
+        # ✅ NUEVO: Set run_cap for random/bayes
+        if method in ["random", "bayes"] and n_trials is not None:
+            sweep_config["run_cap"] = n_trials
+
+        # ✅ NUEVO: Early termination (saves compute!)
+        if early_terminate is not None:
+            sweep_config["early_terminate"] = early_terminate
+
+        # Fixed parameters
         sweep_config["parameters"]["x_dataset"] = {"value": x._hash}
         sweep_config["parameters"]["y_dataset"] = (
             {"value": y._hash} if y is not None else {"value": "None"}
         )
+
+        # Metric
         sweep_config["metric"] = {
             "name": scorer.__class__.__name__,
             "goal": "maximize" if scorer.higher_better else "minimize",
         }
-        print("______________________SWEE CONFIG_____________________")
+
+        print("______________________SWEEP CONFIG_____________________")
         print(sweep_config)
-        print("_____________________________________________________")
+        print("_______________________________________________________")
+
         return wandb.sweep(sweep_config, project=project_name)  # type: ignore
 
     def get_sweep(self, project_name, sweep_id) -> Any:

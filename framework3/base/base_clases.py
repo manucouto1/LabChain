@@ -793,7 +793,7 @@ class BaseFilter(BasePlugin):
         data_hashcode = hashlib.sha1(data_str.encode("utf-8")).hexdigest()
         return data_hashcode, data_str
 
-    def grid(self, grid: Dict[str, List[Any] | Tuple[Any, Any]]) -> BaseFilter:
+    def grid(self, grid: Dict[str, List[Any] | Tuple[Any, Any] | dict]) -> BaseFilter:
         """
         Set up grid search parameters for the filter.
 
