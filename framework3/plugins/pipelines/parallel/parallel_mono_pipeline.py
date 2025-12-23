@@ -101,7 +101,7 @@ class MonoPipeline(ParallelPipeline):
             try:
                 losses.append(f.fit(deepcopy(x), y))
             except NotTrainableFilterError:
-                f.init()
+                print("Skipping not trainable filter:", f.__class__.__name__)
 
         # filtre los valores None
 

@@ -159,7 +159,8 @@ class F3Pipeline(SequentialPipeline):
             try:
                 loss = filter.fit(x, y)
             except NotTrainableFilterError:
-                filter.init()  # Initialize filter
+                if self._verbose:
+                    rprint("Skipping not trainable filter:", filter.__class__.__name__)
 
             x = filter.predict(x)
 

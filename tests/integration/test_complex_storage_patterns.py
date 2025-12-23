@@ -251,10 +251,6 @@ def test_cached_filter_in_parallel_pipeline_consistency():
         ]
     )
 
-    parallel_mono_1.init()
-    parallel_mono_2.init()
-    parallel_mono_3.init()
-
     x = XYData.mock(np.array([[1, 2, 3]]))
 
     parallel_mono_1.predict(x)

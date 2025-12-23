@@ -128,14 +128,14 @@ class Cached(BaseFilter):
         self._storage._verbose = value
         self.filter.verbose(value)
 
-    def init(self) -> None:
-        """
-        Initialize the cached filter.
+    # def init(self) -> None:
+    #     """
+    #     Initialize the cached filter.
 
-        This method initializes both the underlying filter and the Cached filter itself.
-        """
-        self.filter.init()
-        super().init()
+    #     This method initializes both the underlying filter and the Cached filter itself.
+    #     """
+    #     self.filter.init()
+    #     super().init()
 
     def _pre_fit_wrapp(self, x: XYData, y: Optional[XYData]) -> float | None | dict:
         """
@@ -208,39 +208,52 @@ class Cached(BaseFilter):
             y (Optional[XYData]): The target data, if any.
         """
 
-        self.filter._pre_fit(x, y)
+        f_m_hash = self.filter._m_hash
+        f_m_path = self.filter._m_path
+        f_m_str = self.filter._m_str
 
-        if (
-            not self._storage.check_if_exists(
-                hashcode="model",
-                context=f"{self._storage.get_root_path()}{self.filter._m_path}",
-            )
-            or self.overwrite
-        ):
-            if self._verbose:
-                rprint(
-                    f"\t - El filtro {self.filter} con hash {self.filter._m_hash} No existe, se va a entrenar."
-                )
-            self.filter._original_fit(x, y)
-
-            if self.cache_filter and method_is_overridden(self.filter.__class__, "fit"):
-                if self._verbose:
-                    rprint(f"\t - El filtro {self.filter} Se cachea.")
-                self._storage.upload_file(
-                    file=pickle.dumps(self.filter),
-                    file_name="model",
+        try:
+            self.filter._pre_fit(x, y)
+            if (
+                not self._storage.check_if_exists(
+                    hashcode="model",
                     context=f"{self._storage.get_root_path()}{self.filter._m_path}",
                 )
-        else:
-            if self._verbose:
-                rprint(f"\t - El filtro {self.filter} Existe, se carga del storage.")
+                or self.overwrite
+            ):
+                if self._verbose:
+                    rprint(
+                        f"\t - El filtro {self.filter} con hash {self.filter._m_hash} No existe, se va a entrenar."
+                    )
+                self.filter._original_fit(x, y)
 
-            self._lambda_filter = lambda: cast(
-                BaseFilter,
-                self._storage.download_file(
-                    "model", f"{self._storage.get_root_path()}{self.filter._m_path}"
-                ),
-            )
+                if self.cache_filter and method_is_overridden(
+                    self.filter.__class__, "fit"
+                ):
+                    if self._verbose:
+                        rprint(f"\t - El filtro {self.filter} Se cachea.")
+                    self._storage.upload_file(
+                        file=pickle.dumps(self.filter),
+                        file_name="model",
+                        context=f"{self._storage.get_root_path()}{self.filter._m_path}",
+                    )
+            else:
+                if self._verbose:
+                    rprint(
+                        f"\t - El filtro {self.filter} Existe, se carga del storage."
+                    )
+
+                self._lambda_filter = lambda: cast(
+                    BaseFilter,
+                    self._storage.download_file(
+                        "model", f"{self._storage.get_root_path()}{self.filter._m_path}"
+                    ),
+                )
+        except Exception as e:
+            self.filter._m_hash = f_m_hash
+            self.filter._m_path = f_m_path
+            self.filter._m_str = f_m_str
+            raise e
 
     def predict(self, x: XYData) -> XYData:
         """

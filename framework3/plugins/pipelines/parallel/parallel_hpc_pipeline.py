@@ -119,7 +119,7 @@ class HPCPipeline(ParallelPipeline):
             try:
                 filter.fit(deepcopy(x), y)
             except NotTrainableFilterError:
-                filter.init()
+                print("Skipping not trainable filter:", filter.__class__.__name__)
             return filter
 
         spark = PySparkMapReduce(self.app_name, self.master)

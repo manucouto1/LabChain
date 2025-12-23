@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import torch
 import typing_extensions
+from framework3.utils.utils import hash_normalize
 from multimethod import multimethod
 from scipy.sparse import spmatrix, csr_matrix, hstack, vstack
 from typing import TypeAlias
@@ -215,7 +216,9 @@ class XYData(Generic[TxyData]):
             ```
         """
         if hash is None:
-            hash = "Mock"
+            norm = hash_normalize(value)
+            data = repr(norm).encode()
+            hash = hashlib.sha256(data).hexdigest()
 
         if path is None:
             path = "/tmp"

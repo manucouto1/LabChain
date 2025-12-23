@@ -558,17 +558,6 @@ class BaseFilter(BasePlugin):
 
         super().__init__(*args, **kwargs)
 
-        self._m_hash: str
-        self._m_str: str
-        self._m_path: str
-
-    def init(self):
-        """
-        Initialize filter-specific attributes.
-
-        This method sets up the model hash, string representation, and path.
-
-        """
         m_hash, m_str = self._get_model_key(data_hash=" , ")
 
         self._m_hash: str = m_hash
@@ -623,6 +612,8 @@ class BaseFilter(BasePlugin):
         )
         m_path = f"{self._get_model_name()}/{m_hash}"
 
+        print(f"Calling prefit on {self.__class__.__name__}")
+
         self._m_hash = m_hash
         self._m_path = m_path
         self._m_str = m_str
@@ -670,8 +661,18 @@ class BaseFilter(BasePlugin):
         Returns:
             Optional[float]: The result of the original fit method.
         """
-        self._pre_fit(x, y)
-        return self._original_fit(x, y)
+        m_hash = self._m_hash
+        m_path = self._m_path
+        m_str = self._m_str
+        try:
+            self._pre_fit(x, y)
+            res = self._original_fit(x, y)
+        except Exception as e:
+            self._m_hash = m_hash
+            self._m_path = m_path
+            self._m_str = m_str
+            raise e
+        return res
 
     def _pre_predict_wrapp(self, x: XYData) -> XYData:
         """
@@ -737,7 +738,6 @@ class BaseFilter(BasePlugin):
         Raises:
             NotTrainableFilterError: If the filter does not support fitting.
         """
-        self.init()
         raise NotTrainableFilterError("This filter does not support fitting.")
 
     @abstractmethod

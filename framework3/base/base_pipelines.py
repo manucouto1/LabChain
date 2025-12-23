@@ -136,20 +136,20 @@ class BasePipeline(BaseFilter):
         for filter in self.filters:
             filter.verbose(value)
 
-    def init(self, *args: List[Any], **kwargs: Dict[str, Any]):
-        """
-        Initialize the pipeline and its filters.
+    # def init(self, *args: List[Any], **kwargs: Dict[str, Any]):
+    #     """
+    #     Initialize the pipeline and its filters.
 
-        This method initializes both the pipeline itself and all its constituent filters.
+    #     This method initializes both the pipeline itself and all its constituent filters.
 
-        Args:
-            *args (List[Any]): Variable length argument list.
-            **kwargs (Dict[str,Any]): Arbitrary keyword arguments.
+    #     Args:
+    #         *args (List[Any]): Variable length argument list.
+    #         **kwargs (Dict[str,Any]): Arbitrary keyword arguments.
 
-        """
-        super().init(*args, **kwargs)
-        for filter in self.filters:
-            filter.init(*args, **kwargs)
+    #     """
+    #     super().init(*args, **kwargs)
+    #     for filter in self.filters:
+    #         filter.init(*args, **kwargs)
 
     def get_types(self) -> List[Type[BaseFilter]]:
         """
@@ -277,8 +277,9 @@ class SequentialPipeline(BasePipeline):
         new_x = x
 
         for filter in self.filters:
-            filter._pre_fit(new_x, y)
-            new_x = filter._pre_predict(new_x)
+            if filter._original_fit.__func__ is not BaseFilter.fit:
+                filter._pre_fit(new_x, y)
+                new_x = filter._pre_predict(new_x)
 
         return m_hash, m_path, m_str
 

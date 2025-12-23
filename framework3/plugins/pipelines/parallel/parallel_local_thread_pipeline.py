@@ -106,12 +106,12 @@ class LocalThreadPipeline(ParallelPipeline):
             This method updates the filters in place with their trained versions.
         """
 
-        def fit_function(filt: BaseFilter) -> Tuple[BaseFilter, Optional[float]]:
+        def fit_function(filt: BaseFilter) -> Tuple[BaseFilter, Optional[float | dict]]:
             loss = None
             try:
                 loss = filt.fit(deepcopy(x), y)
             except NotTrainableFilterError:
-                filt.init()
+                print("Skipping not trainable filter:", filt.__class__.__name__)
             return filt, loss
 
         with ThreadPoolExecutor(max_workers=self.num_threads) as executor:

@@ -14,10 +14,8 @@ from framework3.plugins.pipelines.sequential.f3_pipeline import F3Pipeline
 
 
 class NonTrainableFilter(BaseFilter):
-    def init(self):
-        self._m_hash = "non_trainable"
-        self._m_str = "non_trainable"
-        self._m_path = "/"
+    def __init__(self):
+        super().__init__()
 
     def predict(self, x: XYData) -> XYData:
         return x
@@ -215,11 +213,11 @@ def test_grid_search_with_specified_parameters():
 
 
 def test_f3_pipeline_with_non_trainable_filter():
-    class NonTrainableFilter(BaseFilter):
-        def init(self):
-            self._m_hash = "non_trainable"
-            self._m_str = "non_trainable"
-            self._m_path = "/"
+    """Test que filtros no-entrenables funcionan en F3Pipeline con lazy initialization"""
+
+    class NonTrainableFilterLocal(BaseFilter):
+        def __init__(self):
+            super().__init__()
 
         def fit(self, x: XYData, y: Optional[XYData]) -> None:
             raise NotTrainableFilterError("This filter is not trainable")
@@ -227,52 +225,99 @@ def test_f3_pipeline_with_non_trainable_filter():
         def predict(self, x: XYData) -> XYData:
             return x
 
-    non_trainable_filter = NonTrainableFilter()
+    non_trainable_filter = NonTrainableFilterLocal()
     pipeline = F3Pipeline(filters=[non_trainable_filter], metrics=[])
 
     x = XYData.mock([1, 2, 3])
     y = XYData.mock([4, 5, 6])
 
-    pipeline.init()
+    # El filtro está inicializado automáticamente (lazy)
     assert hasattr(
         non_trainable_filter, "_m_hash"
-    ), "Filter should be initialized after pipeline.init()"
+    ), "Filter should be initialized automatically"
+    assert non_trainable_filter._m_hash != "", "Hash should not be empty"
 
-    pipeline.fit(x, y)  # This should not raise an error
+    # fit() debería manejar el NotTrainableFilterError correctamente
+    pipeline.fit(x, y)
+
+    # predict() debería funcionar
     result = pipeline.predict(x)
-    assert result.value == x.value, "Non-trainable filter should return input unchanged"
+    assert np.array_equal(
+        result.value, x.value
+    ), "Non-trainable filter should return input unchanged"
+
+
+def test_f3_pipeline_hash_changes_after_fit():
+    """Test que el hash de filtros entrenables cambia después de fit()"""
+
+    class TrainableFilterLocal(BaseFilter):
+        def __init__(self):
+            super().__init__()
+            self.is_fitted = False
+
+        def fit(self, x: XYData, y: Optional[XYData]) -> None:
+            self.is_fitted = True
+
+        def predict(self, x: XYData) -> XYData:
+            if not self.is_fitted:
+                raise ValueError("Must fit before predict")
+            return x
+
+    trainable_filter = TrainableFilterLocal()
+    pipeline = F3Pipeline(filters=[trainable_filter], metrics=[])
+
+    x = XYData.mock([1, 2, 3])
+    y = XYData.mock([4, 5, 6])
+
+    # Guardar hash inicial
+    initial_hash = trainable_filter._m_hash
+    assert initial_hash != "", "Initial hash should not be empty"
+
+    # Después de fit, el hash debería cambiar
+    pipeline.fit(x, y)
+    assert trainable_filter._m_hash != initial_hash, "Hash should change after fit()"
+    assert trainable_filter.is_fitted, "Filter should be fitted"
+
+    # predict() debería funcionar
+    result = pipeline.predict(x)
+    assert result is not None
 
 
 def test_parallel_mono_pipeline_with_non_trainable_filter():
-    class NonTrainableFilter(BaseFilter):
-        def init(self):
-            self._m_hash = "non_trainable"
-            self._m_str = "non_trainable"
-            self._m_path = "/"
+    """Test MonoPipeline con filtros no-entrenables usando lazy initialization"""
+
+    class NonTrainableFilterLocal(BaseFilter):
+        def __init__(self):
+            super().__init__()
 
         def predict(self, x: XYData) -> XYData:
-            return x  # type: ignore
+            return x
 
-    non_trainable_filter = NonTrainableFilter()
+    non_trainable_filter = NonTrainableFilterLocal()
     pipeline = MonoPipeline(filters=[non_trainable_filter, non_trainable_filter])
 
     x = XYData.mock([1, 2, 3])
     y = XYData.mock([4, 5, 6])
 
-    pipeline.init()
+    # El filtro está inicializado automáticamente
     assert hasattr(
         non_trainable_filter, "_m_hash"
-    ), "Filter should be initialized after pipeline.init()"
+    ), "Filter should be initialized automatically"
+    assert non_trainable_filter._m_hash != "", "Hash should not be empty"
 
-    pipeline.fit(x, y)  # This should not raise an error
+    # fit() debería manejar filtros no-entrenables
+    pipeline.fit(x, y)
+
+    # predict() debería funcionar
     result = pipeline.predict(x)
 
     assert (
         result.value.shape[-1] == 2
-    ), "Non-trainable filter should return input doubled las dimention"
+    ), "Non-trainable filter should return input doubled last dimension"
 
 
 def test_parallel_hpc_pipeline_with_non_trainable_filter():
+    """Test HPCPipeline con filtros no-entrenables usando lazy initialization"""
     non_trainable_filter = NonTrainableFilter()
     pipeline = HPCPipeline(
         app_name="test_parallel", filters=[non_trainable_filter, non_trainable_filter]
@@ -281,14 +326,153 @@ def test_parallel_hpc_pipeline_with_non_trainable_filter():
     x = XYData.mock([1, 2, 3])
     y = XYData.mock([4, 5, 6])
 
-    pipeline.init()
+    # El filtro está inicializado automáticamente
     assert hasattr(
         non_trainable_filter, "_m_hash"
-    ), "Filter should be initialized after pipeline.init()"
+    ), "Filter should be initialized automatically"
+    assert non_trainable_filter._m_hash != "", "Hash should not be empty"
 
-    pipeline.fit(x, y)  # This should not raise an error
+    # fit() debería manejar filtros no-entrenables
+    pipeline.fit(x, y)
+
+    # predict() debería funcionar
     result = pipeline.predict(x)
 
     assert (
         result.value.shape[-1] == 2
-    ), "Non-trainable filter should return input doubled las dimention"
+    ), "Non-trainable filter should return input doubled last dimension"
+
+
+def test_pipeline_mixed_trainable_and_non_trainable_filters():
+    """Test pipeline con mezcla de filtros entrenables y no-entrenables"""
+
+    class TrainableFilterLocal(BaseFilter):
+        def __init__(self):
+            super().__init__()
+            self.is_fitted = False
+
+        def fit(self, x: XYData, y: Optional[XYData]) -> None:
+            self.is_fitted = True
+
+        def predict(self, x: XYData) -> XYData:
+            if not self.is_fitted:
+                raise ValueError("Must fit before predict")
+            # Doblar valores para verificar que se ejecutó
+            return XYData(
+                _hash=x._hash + "_doubled",
+                _path=x._path,
+                _value=list(map(lambda i: i * 2, x.value)),
+            )
+
+    class NonTrainableFilterLocal(BaseFilter):
+        def __init__(self):
+            super().__init__()
+
+        # def fit(self, x: XYData, y: Optional[XYData]) -> None:
+        #     raise NotTrainableFilterError("This filter is not trainable")
+
+        def predict(self, x: XYData) -> XYData:
+            # Sumar 1 para verificar que se ejecutó
+            return XYData(
+                _hash=x._hash + "_plus_one",
+                _path=x._path,
+                _value=list(map(lambda i: i + 1, x.value)),
+            )
+
+    trainable = TrainableFilterLocal()
+    non_trainable = NonTrainableFilterLocal()
+
+    pipeline = F3Pipeline(filters=[trainable, non_trainable], metrics=[])
+
+    x = XYData.mock([1, 2, 3])
+    y = XYData.mock([4, 5, 6])
+
+    # Ambos filtros están inicializados automáticamente
+    assert trainable._m_hash != ""
+    assert non_trainable._m_hash != ""
+
+    initial_trainable_hash = trainable._m_hash
+    initial_non_trainable_hash = non_trainable._m_hash
+
+    # fit() debería entrenar solo el filtro entrenable
+    pipeline.fit(x, y)
+
+    # El hash del filtro entrenable debería cambiar
+    assert trainable._m_hash != initial_trainable_hash
+    # El hash del filtro no-entrenable NO debería cambiar
+    assert non_trainable._m_hash == initial_non_trainable_hash
+
+    # predict() debería pasar por ambos filtros
+    result = pipeline.predict(x)
+
+    # Verificar que ambos filtros se ejecutaron: (x * 2) + 1
+    expected = list(map(lambda x: x * 2 + 1, x.value))
+    assert np.array_equal(
+        result.value, expected
+    ), "Both filters should have been applied"
+
+
+def test_filter_hash_consistency_across_instances():
+    """Test que diferentes instancias del mismo filtro tienen el mismo hash inicial"""
+    filter1 = NonTrainableFilter()
+    filter2 = NonTrainableFilter()
+
+    # Mismo hash inicial (misma clase, mismos atributos)
+    assert filter1._m_hash == filter2._m_hash
+    assert filter1._m_str == filter2._m_str
+    assert filter1._m_path == filter2._m_path
+
+
+def test_pipeline_works_without_explicit_init():
+    """Test que pipelines funcionan sin llamar explícitamente a init()"""
+    non_trainable = NonTrainableFilter()
+    pipeline = F3Pipeline(filters=[non_trainable], metrics=[])
+
+    x = XYData.mock([1, 2, 3])
+    y = XYData.mock([4, 5, 6])
+
+    # fit() debería funcionar
+    pipeline.fit(x, y)
+
+    # predict() debería funcionar
+    result = pipeline.predict(x)
+    assert np.array_equal(result.value, x.value)
+
+
+def test_trainable_filter_hash_includes_training_data():
+    """Test que el hash de filtros entrenables incluye información de los datos de entrenamiento"""
+
+    class TrainableFilterLocal(BaseFilter):
+        def __init__(self):
+            super().__init__()
+
+        def fit(self, x: XYData, y: Optional[XYData]) -> None:
+            pass
+
+        def predict(self, x: XYData) -> XYData:
+            return x
+
+    filter1 = TrainableFilterLocal()
+    filter2 = TrainableFilterLocal()
+
+    # Hashes iniciales iguales
+    assert filter1._m_hash == filter2._m_hash
+
+    # Entrenar con datos diferentes
+    x1 = XYData.mock([1, 2, 3])
+    x2 = XYData.mock([4, 5, 6])
+    y1 = XYData.mock([7, 8, 9])
+    y2 = XYData.mock([10, 11, 12])
+
+    filter1.fit(x1, y1)
+    filter2.fit(x2, y2)
+
+    # Hashes deberían ser diferentes (incluyen datos de entrenamiento)
+    assert filter1._m_hash != filter2._m_hash
+
+    # Entrenar tercer filtro con mismos datos que filter1
+    filter3 = TrainableFilterLocal()
+    filter3.fit(x1, y1)
+
+    # Debería tener el mismo hash que filter1 (mismos datos)
+    assert filter1._m_hash == filter3._m_hash
