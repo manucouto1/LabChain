@@ -407,6 +407,7 @@ LabChain is **actively maintained** and used daily in production research at [Ci
 **Experimental components**: Sklearn/Optuna optimizers, distributed execution.
 
 **Roadmap**:
+
 - Graphical interfaces for non-programmers
 - Federated execution across institutions
 - Deep PyTorch integration (cacheable layer-wise pretraining)

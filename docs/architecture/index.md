@@ -143,6 +143,7 @@ data_hash = SHA256(name + str(value))
 ```
 
 **Implications:**
+
 - Identical data → Same hash → Cache hit
 - Modified data → Different hash → Cache miss (automatic invalidation)
 
@@ -422,6 +423,7 @@ Locks store metadata for debugging and crash detection:
 ### Crash Detection
 
 If a process crashes:
+
 1. Heartbeat stops updating
 2. Other processes detect: `current_time - last_heartbeat > 3 * heartbeat_interval`
 3. Lock is considered "dead" and can be stolen
