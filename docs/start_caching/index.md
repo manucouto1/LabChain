@@ -22,9 +22,10 @@ When testing multiple classifiers on the same preprocessed data, traditional wor
 LabChain uses **content-addressable storage** with cryptographic hashing:
 
 1. **Hash Generation**: Each filter computes a unique hash from:
-   - Class name (e.g., `StandardScalerPlugin`)
-   - **Public attributes** (constructor parameters)
-   - Input data hash (for trainable filters)
+
+    - Class name (e.g., `StandardScalerPlugin`)
+    - **Public attributes** (constructor parameters)
+    - Input data hash (for trainable filters)
 
 2. **Cache Lookup**: Before executing, LabChain checks if the hash exists in storage
 
@@ -72,6 +73,7 @@ filter_hash = hash(class_name, public_attributes)
 ```
 
 **Why this matters:**
+
 - Changing `scale` or `offset` → **New hash** → Cache miss (correct!)
 - Changing `_mean` (private) → **Same hash** → Cache hit (correct!)
 - Adding new public attribute without updating constructor → **Error**
@@ -133,18 +135,22 @@ Cached(
 ```
 
 **`cache_data`**: Cache the filter's output
+
 - `True`: Store `predict()` results
 - `False`: Always recompute output (but may still cache filter state)
 
 **`cache_filter`**: Cache the fitted filter itself
+
 - `True`: Store filter after `fit()` for later reuse
 - `False`: Always retrain filter
 
 **`overwrite`**: Force cache invalidation
+
 - `True`: Ignore existing cache, recompute and overwrite
 - `False`: Use cache if available
 
 **`storage`**: Override global storage
+
 - `None`: Use `Container.storage`
 - Custom instance: Use specific storage for this filter
 
@@ -350,6 +356,7 @@ cached_filter.fit(x_train, y_train)  # Only one process computes
 ```
 
 **How it works:**
+
 - Uses atomic file operations (`O_CREAT | O_EXCL`) for kernel-level locking
 - Safe across multiple processes on the same filesystem (including NFS)
 - Lock files stored in `cache/locks/` directory
@@ -387,6 +394,7 @@ cached_filter.fit(x_train, y_train)  # ⏳ Waits, downloads result
 ```
 
 **How it works:**
+
 - Uses S3 PUT operations (atomic at object level)
 - Works with any S3-compatible service (AWS S3, MinIO, DigitalOcean Spaces)
 - Lock metadata stored as S3 objects in `locks/` prefix
@@ -413,6 +421,7 @@ cached_filter = CachedWithLocking(
 ```
 
 **What happens when TTL expires:**
+
 1. Lock becomes "stale"
 2. Other processes can "steal" the lock
 3. Original process (if still running) loses exclusivity

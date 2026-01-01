@@ -62,6 +62,7 @@ y_test = XYData("iris_test_y", "/datasets/iris", y_test)
 ```
 
 **What's happening:**
+
 - `XYData` wraps your numpy arrays with metadata
 - The first argument is a descriptive name
 - The second argument is a logical path (used for cache organization)
@@ -92,6 +93,7 @@ print(results)
 ```
 
 **Key points:**
+
 - Filters execute sequentially in the order specified
 - Each filter's output becomes the next filter's input
 - Metrics are computed during evaluation only
@@ -166,6 +168,7 @@ print(results_svm)
 ```
 
 **Benefits:**
+
 - Preprocessing computed once, reused for all classifiers
 - Dramatically faster experimentation
 - Cache is content-addressable (automatic invalidation when data changes)
@@ -207,6 +210,7 @@ print(f"\nIndividual fold F1 scores: {results_cv['F1_scores']}")
 ```
 
 **What you get:**
+
 - Mean score across all folds
 - Standard deviation (measures stability)
 - Individual fold scores for detailed analysis
@@ -302,6 +306,7 @@ print(f"Optuna best F1: {best_optuna['best_score']:.3f}")
 ```
 
 **Why Bayesian optimization:**
+
 - Smarter search strategy (learns from previous trials)
 - Fewer evaluations needed
 - Can handle continuous and categorical parameters
@@ -390,18 +395,21 @@ print(f"Cross-validation std: {final_results.get('cv_std', 'N/A')}")
 **What this pipeline does:**
 
 1. **Preprocessing** (with caching):
-   - Scales features once
-   - Cached for all subsequent trials
+
+    - Scales features once
+    - Cached for all subsequent trials
 
 2. **Cross-validation** (robust evaluation):
-   - 5-fold stratified CV
-   - Maintains class distribution
-   - Reports mean ± std
+
+    - 5-fold stratified CV
+    - Maintains class distribution
+    - Reports mean ± std
 
 3. **Optimization** (smart search):
-   - 50 Bayesian trials
-   - Learns from previous evaluations
-   - Persists results to SQLite
+
+    - 50 Bayesian trials
+    - Learns from previous evaluations
+    - Persists results to SQLite
 
 4. **Result**: Best model configuration with reliable performance estimate
 
@@ -501,6 +509,7 @@ predictions_restored = restored_pipeline.predict(x_test)
 ```
 
 **Use cases:**
+
 - Version control experiments
 - Share configurations with team
 - Reproduce published results
@@ -611,11 +620,11 @@ You've learned the fundamentals! Explore these resources:
 
 LabChain provides a modular, cacheable, and reproducible framework for ML experiments:
 
-✅ **Modular**: Build pipelines from composable filters
-✅ **Cacheable**: Automatic result reuse with content-addressable hashing
-✅ **Reproducible**: JSON serialization for exact experiment replay
-✅ **Optimizable**: Built-in grid, Bayesian, and W&B integration
-✅ **Validated**: Seamless cross-validation support
-✅ **Extensible**: Create custom filters by inheriting `BaseFilter`
+- ✅ **Modular**: Build pipelines from composable filters
+- ✅ **Cacheable**: Automatic result reuse with content-addressable hashing
+- ✅ **Reproducible**: JSON serialization for exact experiment replay
+- ✅ **Optimizable**: Built-in grid, Bayesian, and W&B integration
+- ✅ **Validated**: Seamless cross-validation support
+- ✅ **Extensible**: Create custom filters by inheriting `BaseFilter`
 
 Start building better ML experiments today! 🚀
