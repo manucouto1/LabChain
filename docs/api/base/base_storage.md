@@ -1,4 +1,4 @@
-::: framework3.base.base_storage
+::: labchain.base.base_storage
     options:
       show_root_heading: true
       show_source: true

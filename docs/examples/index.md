@@ -2,11 +2,11 @@
 icon: octicons/mortar-board-16
 ---
 
-# Framework3 Examples
+# labchain Examples
 
-Welcome to the Examples section of the Framework3 documentation. Here you'll find a collection of hands-on tutorials and real-world use cases to help you make the most of the framework's capabilities.
+Welcome to the Examples section of the labchain documentation. Here you'll find a collection of hands-on tutorials and real-world use cases to help you make the most of the framework's capabilities.
 
-These examples are designed to walk you through common workflows and showcase best practices when working with Framework3. Whether you're just getting started or aiming to deepen your understanding, this section will guide you through using the platform effectively.
+These examples are designed to walk you through common workflows and showcase best practices when working with labchain. Whether you're just getting started or aiming to deepen your understanding, this section will guide you through using the platform effectively.
 
 ## Available Tutorials
 
@@ -18,7 +18,7 @@ An index of basic tutorials to get you started:
    Learn how to store, retrieve, update, and manage datasets using the `Container.ds` storage backend.
 
 2. [Creating a Simple Pipeline](simple_f3pipeline.md)
-   Build a basic machine learning pipeline using Framework3’s modular components.
+   Build a basic machine learning pipeline using labchain’s modular components.
 
 ### Live Tutorials
 
@@ -41,10 +41,10 @@ Actively maintained notebooks showcasing more advanced use cases:
 
 ### Real-World Applications
 
-Explore how Framework3 has been applied in real scientific research:
+Explore how labchain has been applied in real scientific research:
 
 Each tutorial includes step-by-step instructions, code examples, and explanations to help you apply these concepts in your own projects. While we recommend going through them in order, feel free to jump to whichever topic suits your current needs.
 
-This section will be regularly updated as Framework3 evolves — stay tuned for new tutorials and enhancements.
+This section will be regularly updated as labchain evolves — stay tuned for new tutorials and enhancements.
 
 Happy experimenting!

@@ -1,12 +1,10 @@
 import pytest
-from unittest.mock import patch, MagicMock
-from framework3.container.container import Container
-from framework3.base import (
+from labchain.container.container import Container
+from labchain.base import (
     BaseFilter,
     BasePipeline,
     BaseMetric,
     BaseStorage,
-    BasePlugin,
 )
 
 

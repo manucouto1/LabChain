@@ -1,5 +1,5 @@
 from sklearn.metrics import confusion_matrix
-from framework3 import BaseMetric, Container, XYData
+from labchain import BaseMetric, Container, XYData
 
 from numpy import exp
 import numpy as np

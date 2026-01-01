@@ -1,4 +1,4 @@
-::: framework3.utils.utils
+::: labchain.utils.utils
     options:
       show_root_heading: true
       show_source: true

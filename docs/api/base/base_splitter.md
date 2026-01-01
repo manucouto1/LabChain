@@ -1,4 +1,4 @@
-::: framework3.base.base_splitter
+::: labchain.base.base_splitter
     options:
       show_root_heading: true
       show_source: true

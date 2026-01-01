@@ -3,14 +3,14 @@ import pytest
 import numpy as np
 
 from sklearn.model_selection import GridSearchCV
-from framework3 import Container, KMeansFilter
-from framework3.plugins.filters.transformation.pca import PCAPlugin
-from framework3.plugins.filters.classification.svm import ClassifierSVMPlugin
-from framework3.base.base_types import XYData
-from framework3.base.base_clases import BaseFilter, BasePlugin
-from framework3.plugins.optimizer import SklearnOptimizer
-from framework3.plugins.pipelines.sequential import F3Pipeline
-from framework3.utils.skestimator import SkWrapper
+from labchain import Container, KMeansFilter
+from labchain.plugins.filters.transformation.pca import PCAPlugin
+from labchain.plugins.filters.classification.svm import ClassifierSVMPlugin
+from labchain.base.base_types import XYData
+from labchain.base.base_clases import BaseFilter, BasePlugin
+from labchain.plugins.optimizer import SklearnOptimizer
+from labchain.plugins.pipelines.sequential import F3Pipeline
+from labchain.utils.skestimator import SkWrapper
 
 
 class DummyFilter(BaseFilter):

@@ -45,6 +45,7 @@ nav:
   - Home:
     - Overview: index.md
     - Quick Start: quick_start/index.md
+    - Start Caching: start_caching/index.md
     - Installation: installation/index.md
 
   - Architecture: architecture/index.md

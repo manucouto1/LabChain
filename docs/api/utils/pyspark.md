@@ -1,4 +1,4 @@
-::: framework3.utils.pyspark
+::: labchain.utils.pyspark
     options:
       show_root_heading: true
       show_source: true

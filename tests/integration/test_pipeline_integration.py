@@ -1,16 +1,16 @@
 from typing import Optional
 import numpy as np
 from sklearn import datasets
-from framework3 import HPCPipeline, MonoPipeline
-from framework3.base.base_types import XYData
-from framework3.base.exceptions import NotTrainableFilterError
-from framework3.container import Container
-from framework3.container.container import BaseFilter
-from framework3.plugins.filters.classification.svm import ClassifierSVMPlugin
-from framework3.plugins.filters.grid_search.cv_grid_search import GridSearchCVPlugin
-from framework3.plugins.filters.transformation.pca import PCAPlugin
-from framework3.plugins.metrics.classification import F1, Precission, Recall
-from framework3.plugins.pipelines.sequential.f3_pipeline import F3Pipeline
+from labchain import HPCPipeline, MonoPipeline
+from labchain.base.base_types import XYData
+from labchain.base.exceptions import NotTrainableFilterError
+from labchain.container import Container
+from labchain.container.container import BaseFilter
+from labchain.plugins.filters.classification.svm import ClassifierSVMPlugin
+from labchain.plugins.filters.grid_search.cv_grid_search import GridSearchCVPlugin
+from labchain.plugins.filters.transformation.pca import PCAPlugin
+from labchain.plugins.metrics.classification import F1, Precission, Recall
+from labchain.plugins.pipelines.sequential.f3_pipeline import F3Pipeline
 
 
 class NonTrainableFilter(BaseFilter):

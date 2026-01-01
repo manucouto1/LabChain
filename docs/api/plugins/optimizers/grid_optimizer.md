@@ -1,4 +1,4 @@
-::: framework3.plugins.optimizer.grid_optimizer
+::: labchain.plugins.optimizer.grid_optimizer
     options:
       show_root_heading: true
       show_source: true

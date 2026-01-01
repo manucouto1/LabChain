@@ -119,8 +119,8 @@ Additional utility functions and helpers that support the framework:
 To utilize any component of LabChain, import it from the respective module and register it with the Container if necessary. For example:
 
 ```python
-from framework3.container import Container
-from framework3.base import BaseFilter, BasePipeline, BaseMetric
+from labchain.container import Container
+from labchain.base import BaseFilter, BasePipeline, BaseMetric
 
 @Container.bind()
 class MyFilter(BaseFilter):

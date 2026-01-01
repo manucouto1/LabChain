@@ -1,10 +1,10 @@
 from typing import List, Optional
 import pytest
 import numpy as np
-from framework3.container import Container
-from framework3.plugins.filters.grid_search.cv_grid_search import GridSearchCVPlugin
-from framework3.base import BasePlugin, BaseFilter
-from framework3.base import XYData
+from labchain.container import Container
+from labchain.plugins.filters.grid_search.cv_grid_search import GridSearchCVPlugin
+from labchain.base import BasePlugin, BaseFilter
+from labchain.base import XYData
 
 
 @Container.bind()

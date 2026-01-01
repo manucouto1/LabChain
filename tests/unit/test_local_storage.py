@@ -2,7 +2,7 @@ from pathlib import Path
 import pytest
 import os
 import pickle
-from framework3.plugins.storage import LocalStorage
+from labchain.plugins.storage import LocalStorage
 
 
 @pytest.fixture

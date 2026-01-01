@@ -1,8 +1,8 @@
 from typing import Literal
 from sklearn.ensemble import RandomForestClassifier
 
-from framework3 import Container, XYData
-from framework3.base import BaseFilter
+from labchain import Container, XYData
+from labchain.base import BaseFilter
 
 
 @Container.bind()

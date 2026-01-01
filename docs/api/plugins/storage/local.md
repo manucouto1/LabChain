@@ -1,5 +1,5 @@
 
-::: framework3.plugins.storage.local_storage.LocalStorage
+::: labchain.plugins.storage.local_storage.LocalStorage
     options:
       show_root_heading: true
       show_source: true

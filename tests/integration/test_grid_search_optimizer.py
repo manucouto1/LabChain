@@ -2,7 +2,7 @@ import pytest
 from sklearn import datasets
 from rich import print
 
-from framework3 import (
+from labchain import (
     F1,
     Cached,
     F3Pipeline,
@@ -13,8 +13,8 @@ from framework3 import (
     Recall,
     StandardScalerPlugin,
 )
-from framework3.base.base_clases import XYData
-from framework3.plugins.optimizer.grid_optimizer import GridOptimizer
+from labchain.base.base_clases import XYData
+from labchain.plugins.optimizer.grid_optimizer import GridOptimizer
 
 
 def load_iris_data():

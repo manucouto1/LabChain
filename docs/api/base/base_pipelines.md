@@ -1,4 +1,4 @@
-::: framework3.base.base_pipelines
+::: labchain.base.base_pipelines
     options:
       show_root_heading: true
       show_source: true

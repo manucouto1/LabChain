@@ -4,8 +4,8 @@ from typing import Dict, Optional, get_type_hints
 import pytest
 import typeguard
 import numpy as np
-from framework3.base import BasePlugin, BaseFilter, BaseMetric, BasePipeline
-from framework3.base.base_types import XYData
+from labchain.base import BasePlugin, BaseFilter, BaseMetric, BasePipeline
+from labchain.base.base_types import XYData
 
 
 class ConcreteFilter(BaseFilter):

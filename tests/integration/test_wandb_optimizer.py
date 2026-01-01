@@ -4,7 +4,7 @@ from sklearn import datasets
 import pytest
 import typeguard
 
-from framework3 import (
+from labchain import (
     F1,
     Cached,
     F3Pipeline,
@@ -14,12 +14,12 @@ from framework3 import (
     StandardScalerPlugin,
     WandbOptimizer,
 )
-from framework3.plugins.metrics.classification import XYData
-from framework3.plugins.splitter.cross_validation_splitter import KFoldSplitter
+from labchain.plugins.metrics.classification import XYData
+from labchain.plugins.splitter.cross_validation_splitter import KFoldSplitter
 
 
-from framework3.utils.wandb import WandbSweepManager
-from framework3.base import BaseFilter, XYData, BaseMetric
+from labchain.utils.wandb import WandbSweepManager
+from labchain.base import BaseFilter, XYData, BaseMetric
 import numpy as np
 
 
@@ -96,7 +96,7 @@ def test_bayesian_sweep():
 
 
 def test_wandb_pipeline_init_raises_value_error():
-    from framework3.base import BaseMetric
+    from labchain.base import BaseMetric
 
     with pytest.raises(
         ValueError, match="Either pipeline or sweep_id must be provided"
@@ -110,7 +110,7 @@ def test_wandb_pipeline_init_raises_value_error():
 
 
 def test_wandb_pipeline_init_raises_value_error_for_invalid_project():
-    from framework3.base import BaseMetric
+    from labchain.base import BaseMetric
 
     with pytest.raises(
         ValueError, match="Either pipeline or sweep_id must be provided"
@@ -132,7 +132,7 @@ def test_wandb_pipeline_init_raises_value_error_for_invalid_project():
 
 
 def test_wandb_pipeline_init_with_valid_parameters():
-    from framework3.base import BaseMetric
+    from labchain.base import BaseMetric
 
     mock_pipeline = MagicMock()
     mock_scorer = MagicMock(spec=BaseMetric)

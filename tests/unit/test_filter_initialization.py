@@ -1,9 +1,9 @@
 import pytest
-from framework3.base.base_types import XYData
-from framework3.base.base_clases import BaseFilter
+from labchain.base.base_types import XYData
+from labchain.base.base_clases import BaseFilter
 from typing import Optional
 
-from framework3.base.exceptions import NotTrainableFilterError
+from labchain.base.exceptions import NotTrainableFilterError
 
 
 class TrainableFilter(BaseFilter):

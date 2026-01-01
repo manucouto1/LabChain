@@ -2,16 +2,16 @@ import pytest
 import numpy as np
 from sklearn import datasets
 from unittest.mock import MagicMock, ANY
-from framework3 import MonoPipeline
-from framework3.plugins.filters.cache.cached_filter import Cached
-from framework3.base import BaseFilter, XYData
-from framework3.plugins.filters.transformation.pca import PCAPlugin
-from framework3.plugins.filters.transformation.scaler import StandardScalerPlugin
-from framework3.plugins.pipelines.parallel.parallel_hpc_pipeline import HPCPipeline
-from framework3.plugins.pipelines.sequential.f3_pipeline import F3Pipeline
-from framework3.plugins.filters.classification.svm import ClassifierSVMPlugin
-from framework3.plugins.filters.classification.knn import KnnFilter
-from framework3.plugins.storage.local_storage import LocalStorage
+from labchain import MonoPipeline
+from labchain.plugins.filters.cache.cached_filter import Cached
+from labchain.base import BaseFilter, XYData
+from labchain.plugins.filters.transformation.pca import PCAPlugin
+from labchain.plugins.filters.transformation.scaler import StandardScalerPlugin
+from labchain.plugins.pipelines.parallel.parallel_hpc_pipeline import HPCPipeline
+from labchain.plugins.pipelines.sequential.f3_pipeline import F3Pipeline
+from labchain.plugins.filters.classification.svm import ClassifierSVMPlugin
+from labchain.plugins.filters.classification.knn import KnnFilter
+from labchain.plugins.storage.local_storage import LocalStorage
 from rich import print
 
 

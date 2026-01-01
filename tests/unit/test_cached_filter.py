@@ -4,10 +4,10 @@ import pytest
 import numpy as np
 import pickle
 from unittest.mock import ANY, MagicMock
-from framework3.base import BaseFilter, BaseStorage
-from framework3.base import XYData
-from framework3.base.exceptions import NotTrainableFilterError
-from framework3.plugins.filters.cache.cached_filter import Cached
+from labchain.base import BaseFilter, BaseStorage
+from labchain.base import XYData
+from labchain.base.exceptions import NotTrainableFilterError
+from labchain.plugins.filters.cache.cached_filter import Cached
 from numpy.typing import ArrayLike
 
 
@@ -499,7 +499,7 @@ def test_cached_non_trainable_filter_predict():
 
 def test_cached_non_trainable_filter_in_pipeline():
     """Test que pipelines con filtros no-entrenables funcionan sin init() explícito"""
-    from framework3.plugins.pipelines import F3Pipeline
+    from labchain.plugins.pipelines import F3Pipeline
 
     non_trainable_filter = NonTrainableFilter()
     cached_filter = Cached(filter=non_trainable_filter, cache_filter=False)
@@ -519,7 +519,7 @@ def test_cached_non_trainable_filter_in_pipeline():
 
 def test_pipeline_with_not_trainable_filters():
     """Test que pipelines funcionan con filtros no-entrenables"""
-    from framework3.plugins.pipelines import F3Pipeline
+    from labchain.plugins.pipelines import F3Pipeline
 
     non_trainable_filter = NonTrainableFilter()
     cached_filter = Cached(filter=non_trainable_filter, cache_filter=False)

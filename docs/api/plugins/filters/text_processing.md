@@ -1,4 +1,4 @@
-::: framework3.plugins.filters.llm
+::: labchain.plugins.filters.llm
     options:
       show_root_heading: true
       show_source: true

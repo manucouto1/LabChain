@@ -3,20 +3,20 @@ requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
 build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.poetry]
-name = "framework3"
+name = "labchain"
 version = "0.0.0"  # Esto será reemplazado dinámicamente
 description = "A flexible framework for machine learning pipelines"
 authors = ["Manuel Couto Pintos <manuel.couto.pintos@usc.es>"]
 license = "AGPL-3.0-or-later"
 readme = "README.md"
-packages = [{include = "framework3"}]
+packages = [{include = "labchain"},{include = "framework3"}]
 keywords = [
-    "machine learning",
-    "framework",
-    "pipeline",
+    "Pipelines & Filters",
+    "Research Framework",
+    "Caching",
     "ML",
     "AI",
-    "data science",
+    "Experimentation",
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -34,10 +34,10 @@ multimethod = "1.12"
 pyspark = "3.5.3"
 fastapi = "0.115.5"
 pandas = "2.2.3"
-torch = "2.5.1"
+torch = "2.6.0"
 scipy = "1.13.1"
 rich = "13.9.4"
-boto3 = "1.35.73"
+boto3 = "1.42.10"
 scikit-learn = "1.5.2"
 cloudpickle = "3.1.0"
 tqdm = "4.67.1"

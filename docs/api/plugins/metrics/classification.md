@@ -1,6 +1,6 @@
 # Classification Metrics
 
-::: framework3.plugins.metrics.classification
+::: labchain.plugins.metrics.classification
 
 ## Overview
 
@@ -15,7 +15,7 @@ The Accuracy Score is implemented in the `AccuracyScoreMetric`. It computes the 
 #### Usage
 
 ```python
-from framework3.plugins.metrics.classification.accuracy_score import AccuracyScoreMetric
+from labchain.plugins.metrics.classification.accuracy_score import AccuracyScoreMetric
 
 accuracy_metric = AccuracyScoreMetric()
 score = accuracy_metric.compute(y_true, y_pred)
@@ -28,7 +28,7 @@ The Precision Score is implemented in the `PrecisionScoreMetric`. It computes th
 #### Usage
 
 ```python
-from framework3.plugins.metrics.classification.precision_score import PrecisionScoreMetric
+from labchain.plugins.metrics.classification.precision_score import PrecisionScoreMetric
 
 precision_metric = PrecisionScoreMetric(average='weighted')
 score = precision_metric.compute(y_true, y_pred)
@@ -45,7 +45,7 @@ The Recall Score is implemented in the `RecallScoreMetric`. It computes the reca
 #### Usage
 
 ```python
-from framework3.plugins.metrics.classification.recall_score import RecallScoreMetric
+from labchain.plugins.metrics.classification.recall_score import RecallScoreMetric
 
 recall_metric = RecallScoreMetric(average='weighted')
 score = recall_metric.compute(y_true, y_pred)
@@ -62,7 +62,7 @@ The F1 Score is implemented in the `F1ScoreMetric`. It computes the F1 score, wh
 #### Usage
 
 ```python
-from framework3.plugins.metrics.classification.f1_score import F1ScoreMetric
+from labchain.plugins.metrics.classification.f1_score import F1ScoreMetric
 
 f1_metric = F1ScoreMetric(average='weighted')
 score = f1_metric.compute(y_true, y_pred)
@@ -77,12 +77,12 @@ score = f1_metric.compute(y_true, y_pred)
 In this example, we'll demonstrate how to use the Classification Metrics to evaluate the performance of a classification model.
 
 ```python
-from framework3.plugins.filters.classification.svm import ClassifierSVMPlugin
-from framework3.plugins.metrics.classification.accuracy_score import AccuracyScoreMetric
-from framework3.plugins.metrics.classification.precision_score import PrecisionScoreMetric
-from framework3.plugins.metrics.classification.recall_score import RecallScoreMetric
-from framework3.plugins.metrics.classification.f1_score import F1ScoreMetric
-from framework3.base.base_types import XYData
+from labchain.plugins.filters.classification.svm import ClassifierSVMPlugin
+from labchain.plugins.metrics.classification.accuracy_score import AccuracyScoreMetric
+from labchain.plugins.metrics.classification.precision_score import PrecisionScoreMetric
+from labchain.plugins.metrics.classification.recall_score import RecallScoreMetric
+from labchain.plugins.metrics.classification.f1_score import F1ScoreMetric
+from labchain.base.base_types import XYData
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 

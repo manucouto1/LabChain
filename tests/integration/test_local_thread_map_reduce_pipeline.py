@@ -1,19 +1,19 @@
 import pytest
 import typeguard
 
-from framework3.base import BasePipeline
-from framework3.plugins.filters.cache.cached_filter import Cached
-from framework3.plugins.metrics.classification import F1
-from framework3.plugins.pipelines.parallel.parallel_local_thread_pipeline import (
+from labchain.base import BasePipeline
+from labchain.plugins.filters.cache.cached_filter import Cached
+from labchain.plugins.metrics.classification import F1
+from labchain.plugins.pipelines.parallel.parallel_local_thread_pipeline import (
     LocalThreadPipeline,
 )
-from framework3.plugins.pipelines.sequential.f3_pipeline import F3Pipeline
+from labchain.plugins.pipelines.sequential.f3_pipeline import F3Pipeline
 from tests.unit.test_combiner_pipeline import DummyFilter
 from sklearn.datasets import load_iris
-from framework3.base import XYData
-from framework3.plugins.filters.classification import ClassifierSVMPlugin, KnnFilter
-from framework3.plugins.filters.transformation.pca import PCAPlugin
-from framework3.plugins.filters.transformation.scaler import StandardScalerPlugin
+from labchain.base import XYData
+from labchain.plugins.filters.classification import ClassifierSVMPlugin, KnnFilter
+from labchain.plugins.filters.transformation.pca import PCAPlugin
+from labchain.plugins.filters.transformation.scaler import StandardScalerPlugin
 from rich import print as rprint
 
 
@@ -34,7 +34,7 @@ def test_map_reduce_combiner_pipeline_invalid_filters():
     with pytest.raises(typeguard.TypeCheckError) as excinfo:
         LocalThreadPipeline(filters=invalid_filters)
 
-    assert "is not an instance of framework3.base.base_clases.BaseFilter" in str(
+    assert "is not an instance of labchain.base.base_clases.BaseFilter" in str(
         excinfo.value
     )
 

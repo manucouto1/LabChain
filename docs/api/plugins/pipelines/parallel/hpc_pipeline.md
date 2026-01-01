@@ -1,9 +1,9 @@
 # HPCPipeline
 
-The `HPCPipeline` class is part of the `framework3.plugins.pipelines.parallel` module and is designed to facilitate high-performance computing (HPC) tasks within the framework. This pipeline is optimized for parallel processing, allowing for efficient execution of complex workflows across distributed systems.
+The `HPCPipeline` class is part of the `labchain.plugins.pipelines.parallel` module and is designed to facilitate high-performance computing (HPC) tasks within the framework. This pipeline is optimized for parallel processing, allowing for efficient execution of complex workflows across distributed systems.
 
 ## Module Contents
-::: framework3.plugins.pipelines.parallel.parallel_hpc_pipeline
+::: labchain.plugins.pipelines.parallel.parallel_hpc_pipeline
     options:
         show_root_heading: true
         show_source: true
@@ -23,7 +23,7 @@ The `HPCPipeline` class is part of the `framework3.plugins.pipelines.parallel` m
 
 ### Creating and Using HPCPipeline
 ```python
-from framework3.plugins.pipelines.parallel.hpc_pipeline import HPCPipeline
+from labchain.plugins.pipelines.parallel.hpc_pipeline import HPCPipeline
 
 # Initialize the HPCPipeline
 hpc_pipeline = HPCPipeline()

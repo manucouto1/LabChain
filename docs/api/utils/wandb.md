@@ -1,4 +1,4 @@
-::: framework3.utils.wandb
+::: labchain.utils.wandb
     options:
       show_root_heading: true
       show_source: true

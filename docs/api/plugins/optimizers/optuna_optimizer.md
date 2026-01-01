@@ -1,4 +1,4 @@
-::: framework3.plugins.optimizer.optuna_optimizer
+::: labchain.plugins.optimizer.optuna_optimizer
     options:
       show_root_heading: true
       show_source: true

@@ -6,7 +6,7 @@ import io
 from moto import mock_aws
 
 
-from framework3.plugins.storage import S3Storage
+from labchain.plugins.storage import S3Storage
 
 
 @pytest.fixture

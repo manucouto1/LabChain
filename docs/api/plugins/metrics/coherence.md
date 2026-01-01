@@ -1,6 +1,6 @@
 # Coherence Metrics
 
-::: framework3.plugins.metrics.coherence
+::: labchain.plugins.metrics.coherence
 
 ## Overview
 
@@ -15,8 +15,8 @@ The NPMI coherence metric is implemented in the `NPMI` class. It measures the se
 #### Usage
 
 ```python
-from framework3.plugins.metrics.coherence import NPMI
-from framework3.base.base_types import XYData
+from labchain.plugins.metrics.coherence import NPMI
+from labchain.base.base_types import XYData
 
 npmi_metric = NPMI(measure='c_npmi', topk=10, processes=1)
 score = npmi_metric.evaluate(df, predicted)
@@ -47,9 +47,9 @@ Here's an example of how to use the NPMI coherence metric to evaluate a topic mo
 
 ```python
 import pandas as pd
-from framework3.plugins.filters.topic_modeling.lda import LDAPlugin
-from framework3.plugins.metrics.coherence import NPMI
-from framework3.base.base_types import XYData
+from labchain.plugins.filters.topic_modeling.lda import LDAPlugin
+from labchain.plugins.metrics.coherence import NPMI
+from labchain.base.base_types import XYData
 
 # Assume we have a DataFrame 'df' with a 'text' column containing our documents
 df = pd.DataFrame({'text': ["This is document 1", "This is document 2", "Another document here"]})

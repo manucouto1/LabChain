@@ -1,13 +1,13 @@
 from typing import cast
-from framework3.base import BasePipeline, BasePlugin, XYData
-from framework3.container import Container
+from labchain.base import BasePipeline, BasePlugin, XYData
+from labchain.container import Container
 
-from framework3.plugins.filters.classification.knn import KnnFilter
-from framework3.plugins.filters.transformation.pca import PCAPlugin
-from framework3.plugins.metrics import F1, Precission, Recall
-from framework3.plugins.pipelines import F3Pipeline
+from labchain.plugins.filters.classification.knn import KnnFilter
+from labchain.plugins.filters.transformation.pca import PCAPlugin
+from labchain.plugins.metrics import F1, Precission, Recall
+from labchain.plugins.pipelines import F3Pipeline
 
-from framework3.plugins.filters.cache.cached_filter import Cached
+from labchain.plugins.filters.cache.cached_filter import Cached
 
 from rich import print
 
