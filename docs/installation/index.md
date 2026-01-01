@@ -41,7 +41,7 @@ Activate the virtual environment:
 Install LabChain directly from PyPI using pip:
 
 ```bash
-pip install labchain
+pip install framework3
 ```
 
 This command will install the latest stable version of LabChain and all its dependencies.
@@ -63,7 +63,7 @@ If this runs without errors and prints the version number, the installation was 
 To update LabChain to the latest version, simply run:
 
 ```bash
-pip install --upgrade labchain
+pip install --upgrade framework3
 ```
 
 ## Troubleshooting
@@ -77,7 +77,7 @@ If you encounter any issues during installation:
 For more detailed error messages, you can use the verbose mode when installing:
 
 ```bash
-pip install -v labchain
+pip install -v framework3
 ```
 
 If problems persist, please check the project's [issue tracker on GitHub](https://github.com/manucouto1/LabChain/issues) or reach out to the maintainers for support.

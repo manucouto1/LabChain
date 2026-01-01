@@ -11,7 +11,7 @@ This comprehensive guide demonstrates LabChain's core capabilities through pract
 Install LabChain via pip:
 
 ```bash
-pip install labchain
+pip install framework3
 ```
 
 Verify the installation:

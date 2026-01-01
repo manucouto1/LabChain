@@ -181,9 +181,9 @@ This will install the latest stable version of LabChain and its dependencies.
 Here's a basic example of how to use LabChain:
 
 ```python
-from framework3.plugins.pipelines import F3Pipeline
-from framework3.plugins.filters import KnnFilter
-from framework3.plugins.metrics import F1, Precision, Recall
+from labchain.plugins.pipelines import F3Pipeline
+from labchain.plugins.filters import KnnFilter
+from labchain.plugins.metrics import F1, Precision, Recall
 
 # Create a pipeline
 pipeline = F3Pipeline(
@@ -204,7 +204,7 @@ print(evaluation)
 
 ## Documentation
 
-For more detailed information on how to use Framework3, check out our complete documentation at:
+For more detailed information on how to use LabChain, check out our complete documentation at:
 
 [https://manucouto1.github.io/LabChain](https://manucouto1.github.io/LabChain)
 

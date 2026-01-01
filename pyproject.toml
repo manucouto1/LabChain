@@ -3,7 +3,7 @@ requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
 build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.poetry]
-name = "labchain"
+name = "framework3"
 version = "0.0.0"  # Esto será reemplazado dinámicamente
 description = "A flexible framework for machine learning pipelines"
 authors = ["Manuel Couto Pintos <manuel.couto.pintos@usc.es>"]
