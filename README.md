@@ -24,7 +24,7 @@ LabChain is a **production-ready ML experimentation framework** that combines th
 
 ### ✨ Why LabChain?
 
-<table>
+<table align="center">
 <tr>
 <td>
 
