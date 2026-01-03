@@ -209,6 +209,7 @@ pipeline.fit(large_dataset)
 
 <details>
 <summary><b>Classification with Cross-Validation</b></summary>
+
 ```python
 from labchain.pipeline import F3Pipeline
 from labchain.plugins.splitters import KFoldSplitter
@@ -233,12 +234,13 @@ results = pipeline.evaluate(X_test, y_test, pipeline.predict(X_test))
 
 <details>
 <summary><b>Parallel Processing</b></summary>
+
 ```python
-from labchain.pipeline import MonoPipeline
+from labchain.pipeline import LocalThreadPipeline
 from labchain.plugins.filters import Filter1, Filter2, Filter3
 
 # Process filters in parallel
-pipeline = MonoPipeline(
+pipeline = LocalThreadPipeline(
     filters=[
         Filter1(),  # Runs in parallel
         Filter2(),  # Runs in parallel
@@ -254,6 +256,7 @@ predictions = pipeline.predict(X)
 
 <details>
 <summary><b>Custom Components</b></summary>
+
 ```python
 from labchain import Container
 from labchain.base import BaseFilter, XYData
@@ -272,13 +275,16 @@ class MyCustomFilter(BaseFilter):
         return XYData.mock(x.value > self.threshold)
 
 # Use it like any other filter
+
 pipeline = F3Pipeline(filters=[MyCustomFilter(threshold=0.7)])
+
 ```
 
 </details>
 
 <details>
 <summary><b>Version Control & Rollback</b></summary>
+
 ```python
 # Version 1
 @Container.bind(persist=True)
@@ -304,75 +310,6 @@ ModelV1 = Container.ppif.get_version("MyModel", hash_v1)
 
 </details>
 
----
-
-## 🏗️ Architecture
-```mermaid
-graph LR
-    A[Data Input] --> B[XYData]
-    B --> C[Pipeline]
-    C --> D[Filter 1]
-    C --> E[Filter 2]
-    C --> F[Filter N]
-    D & E & F --> G[Predictions]
-    G --> H[Metrics]
-    H --> I[Evaluation Results]
-
-    J[Storage] -.-> C
-    K[Cache] -.-> D
-    K -.-> E
-    K -.-> F
-
-    style C fill:#2374ab
-    style G fill:#00a896
-    style I fill:#ff6f59
-```
-
-<details>
-<summary><b>View Full Class Diagram</b></summary>
-
-```mermaid
-classDiagram
-    class BasePlugin {
-        <<abstract>>
-        +item_dump() Dict
-        +build_from_dump() BasePlugin
-    }
-
-    class BaseFilter {
-        <<abstract>>
-        +fit(x, y) float
-        +predict(x) XYData
-        +evaluate(x, y_true, y_pred) Dict
-    }
-
-    class BasePipeline {
-        <<abstract>>
-        -filters List[BaseFilter]
-        +optimizer() BaseOptimizer
-        +splitter() BaseSplitter
-    }
-
-    class F3Pipeline {
-        +Sequential execution
-    }
-
-    class MonoPipeline {
-        +Parallel execution
-    }
-
-    class HPCPipeline {
-        +Spark distribution
-    }
-
-    BasePlugin <|-- BaseFilter
-    BaseFilter <|-- BasePipeline
-    BasePipeline <|-- F3Pipeline
-    BasePipeline <|-- MonoPipeline
-    BasePipeline <|-- HPCPipeline
-```
-
-</details>
 
 ---
 
