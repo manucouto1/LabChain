@@ -330,6 +330,7 @@ graph LR
 
 <details>
 <summary><b>View Full Class Diagram</b></summary>
+
 ```mermaid
 classDiagram
     class BasePlugin {
@@ -488,9 +489,8 @@ cd docs && mkdocs serve
 
 </div>
 
-- 💬 [GitHub Discussions](https://github.com/manucouto1/LabChain/discussions) - Ask questions and share ideas
 - 🐛 [Issue Tracker](https://github.com/manucouto1/LabChain/issues) - Report bugs and request features
-- 📧 [Email](mailto:support@labchain.ai) - Contact the maintainers
+- 📧 [Email](mailto:manuel.couto.pintos@usc.es) - Contact the maintainers
 - 📖 [Documentation](https://manucouto1.github.io/LabChain) - Comprehensive guides
 
 ---
@@ -507,16 +507,6 @@ This project is licensed under the **AGPL-3.0 License** - see the [LICENSE](LICE
 
 ---
 
-## 🙏 Acknowledgments
-
-Built with ❤️ by the LabChain team and [amazing contributors](https://github.com/manucouto1/LabChain/graphs/contributors).
-
-Special thanks to:
-- The scikit-learn team for inspiration
-- The MLOps community for feedback
-- All our users and contributors
-
----
 
 <div align="center">
 
