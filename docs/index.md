@@ -222,7 +222,7 @@ pipeline.fit(x_train, y_train)
 Install via pip:
 
 ```bash
-pip install labchain
+pip install framework3
 ```
 
 Build your first pipeline:
