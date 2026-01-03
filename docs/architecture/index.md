@@ -486,6 +486,7 @@ ensemble = F3Pipeline(filters=[
 ### Single Responsibility
 
 Each class does one thing well:
+
 - `BaseFilter`: Transform or predict
 - `BasePipeline`: Orchestrate execution
 - `BaseMetric`: Evaluate performance
