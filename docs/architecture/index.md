@@ -4,7 +4,7 @@ icon: material/crane
 
 # Architecture
 
-This guide explains LabChain's internal design, component relationships, and architectural patterns. For usage examples, see the [Quick Start](quick_start.md); for caching details, see the [Caching Guide](start_caching.md).
+This guide explains LabChain's internal design, component relationships, and architectural patterns. For usage examples, see the [Quick Start](../quick_start/index.md); for caching details, see the [Caching Guide](../start_caching/index.md).
 
 ## Core Abstractions
 
@@ -580,7 +580,7 @@ No changes to core required. The container system discovers and registers new co
 
 ## Related Documentation
 
-- **[Quick Start](quick_start.md)** — Learn by building pipelines
-- **[Caching Guide](start_caching.md)** — Master distributed caching
-- **[API Reference](api/index.md)** — Complete class documentation
-- **[Examples](examples/index.md)** — Real-world use cases
+- **[Quick Start](../quick_start/index.md)** — Learn by building pipelines
+- **[Caching Guide](../start_caching/index.md)** — Master distributed caching
+- **[API Reference](../api/index.md)** — Complete class documentation
+- **[Examples](../examples/index.md)** — Real-world use cases

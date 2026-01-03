@@ -30,8 +30,8 @@ class TestLockingLocalStorageBasics:
     def test_initialization(self, locking_storage):
         """Test that storage initializes correctly with locks directory."""
         assert locking_storage.storage_path.endswith("locking/")
-        assert locking_storage.locks_dir.exists()
-        assert locking_storage.locks_dir.name == "locks"
+        assert locking_storage._locks_dir.exists()
+        assert locking_storage._locks_dir.name == "locks"
 
     def test_acquire_lock_success(self, locking_storage):
         """Test successful lock acquisition."""
@@ -40,7 +40,7 @@ class TestLockingLocalStorageBasics:
         result = locking_storage.try_acquire_lock(lock_name, ttl=3600)
 
         assert result is True
-        lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+        lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
         assert lock_file.exists()
 
         # Verify lock metadata
@@ -75,7 +75,7 @@ class TestLockingLocalStorageBasics:
         lock_name = "test_lock"
 
         locking_storage.try_acquire_lock(lock_name)
-        lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+        lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
         assert lock_file.exists()
 
         locking_storage.release_lock(lock_name)
@@ -96,7 +96,7 @@ class TestLockingLocalStorageBasics:
 
         # Verify all locks exist
         for lock_name in locks:
-            lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+            lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
             assert lock_file.exists()
 
         # Release all locks
@@ -105,7 +105,7 @@ class TestLockingLocalStorageBasics:
 
         # Verify all locks released
         for lock_name in locks:
-            lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+            lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
             assert not lock_file.exists()
 
 
@@ -121,7 +121,7 @@ class TestLocalStorageTTLStorage:
         assert locking_storage.try_acquire_lock(lock_name, ttl=ttl) is True
 
         # Read lock file and verify TTL is stored
-        lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+        lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
         with open(lock_file, "r") as f:
             lock_data = json.load(f)
 
@@ -147,7 +147,7 @@ class TestLocalStorageTTLStorage:
 
         # Verify each lock has correct TTL
         for lock_name, expected_ttl in locks:
-            lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+            lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
             with open(lock_file, "r") as f:
                 lock_data = json.load(f)
 
@@ -182,7 +182,7 @@ class TestLocalStorageTTLStorage:
     def test_lock_without_ttl_treated_as_stale(self, locking_storage):
         """Test that locks without TTL field are treated as stale."""
         lock_name = "old_format_lock"
-        lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+        lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
 
         # Create lock file in old format (without TTL)
         old_format_data = {
@@ -216,7 +216,7 @@ class TestLocalStorageTTLStorage:
         # First acquisition with short TTL
         assert locking_storage.try_acquire_lock(lock_name, ttl=1) is True
 
-        lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+        lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
         with open(lock_file, "r") as f:
             data1 = json.load(f)
         assert data1["ttl"] == 1
@@ -473,14 +473,14 @@ class TestLockingLocalStorageIntegration:
     def test_locks_directory_separate_from_data(self, locking_storage):
         """Test that locks are stored separately from data files."""
         # Upload data
-        locking_storage.upload_file("test", "data.pkl", locking_storage.get_root_path())
+        locking_storage.upload_file("test", "data.pkl", "")
 
         # Acquire lock
         locking_storage.try_acquire_lock("lock1")
 
         # Verify structure
         data_file = Path(locking_storage.storage_path) / "data.pkl"
-        lock_file = locking_storage.locks_dir / "lock1.lock"
+        lock_file = locking_storage._locks_dir / "lock1.lock"
 
         assert data_file.exists()
         assert lock_file.exists()
@@ -488,7 +488,7 @@ class TestLockingLocalStorageIntegration:
 
         # Cleanup
         locking_storage.release_lock("lock1")
-        locking_storage.delete_file("data.pkl", locking_storage.get_root_path())
+        locking_storage.delete_file("data.pkl", "")
 
 
 class TestLockingLocalStorageEdgeCases:

@@ -253,13 +253,13 @@ def test_f3_pipeline_hash_changes_after_fit():
     class TrainableFilterLocal(BaseFilter):
         def __init__(self):
             super().__init__()
-            self.is_fitted = False
+            self._is_fitted = False
 
         def fit(self, x: XYData, y: Optional[XYData]) -> None:
-            self.is_fitted = True
+            self._is_fitted = True
 
         def predict(self, x: XYData) -> XYData:
-            if not self.is_fitted:
+            if not self._is_fitted:
                 raise ValueError("Must fit before predict")
             return x
 
@@ -276,7 +276,7 @@ def test_f3_pipeline_hash_changes_after_fit():
     # Después de fit, el hash debería cambiar
     pipeline.fit(x, y)
     assert trainable_filter._m_hash != initial_hash, "Hash should change after fit()"
-    assert trainable_filter.is_fitted, "Filter should be fitted"
+    assert trainable_filter._is_fitted, "Filter should be fitted"
 
     # predict() debería funcionar
     result = pipeline.predict(x)
@@ -349,13 +349,13 @@ def test_pipeline_mixed_trainable_and_non_trainable_filters():
     class TrainableFilterLocal(BaseFilter):
         def __init__(self):
             super().__init__()
-            self.is_fitted = False
+            self._is_fitted = False
 
         def fit(self, x: XYData, y: Optional[XYData]) -> None:
-            self.is_fitted = True
+            self._is_fitted = True
 
         def predict(self, x: XYData) -> XYData:
-            if not self.is_fitted:
+            if not self._is_fitted:
                 raise ValueError("Must fit before predict")
             # Doblar valores para verificar que se ejecutó
             return XYData(

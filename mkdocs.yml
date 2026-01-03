@@ -46,6 +46,7 @@ nav:
     - Overview: index.md
     - Quick Start: quick_start/index.md
     - Start Caching: start_caching/index.md
+    - Remote Injection: remote_injection/index.md
     - Installation: installation/index.md
 
   - Architecture: architecture/index.md
@@ -75,6 +76,9 @@ nav:
           - Factory: api/base/base_factory.md
           - Storage: api/base/base_storage.md
       - Container:
+          - persistant:
+            - Peristant Class Manager: api/container/pet_class_manager.md
+            - Persistant Factory: api/container/pet_factory.md
           - Container: api/container/container.md
           - Overload: api/container/overload.md
       - Plugins:

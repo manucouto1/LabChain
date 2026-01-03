@@ -123,7 +123,7 @@ class StratifiedKFoldSplitter(BaseSplitter):
 
             pipeline = cast(
                 BasePipeline,
-                BasePlugin.build_from_dump(self.pipeline.item_dump(), Container.pif),
+                BasePlugin.build_from_dump(self.pipeline.item_dump(), Container.ppif),
             )
 
             pipeline.fit(X_train, y_train)

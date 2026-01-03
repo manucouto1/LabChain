@@ -1,6 +1,6 @@
 from typing import Any, List
 from labchain.base import BaseStorage
-import pickle
+import cloudpickle as pickle
 
 import os
 from pathlib import Path
@@ -69,7 +69,6 @@ class LocalStorage(BaseStorage):
         Args:
             storage_path (str, optional): The base path for storage. Defaults to 'cache'.
         """
-        super().__init__()
         self.storage_path = (
             storage_path
             if storage_path.endswith("/") or storage_path == ""
@@ -93,7 +92,7 @@ class LocalStorage(BaseStorage):
 
         Args:
             file (Any): The file content to be uploaded.
-            file_name (str): The name of the file.
+            file_name (str): The name of the file (can include subdirectories).
             context (str): The directory path where the file will be saved.
             direct_stream (bool, optional): Not used in this implementation. Defaults to False.
 
@@ -101,11 +100,21 @@ class LocalStorage(BaseStorage):
             str | None: The file name if successful, None otherwise.
         """
         try:
-            prefix = f"{context}/" if context and not context.endswith("/") else context
-            Path(prefix).mkdir(parents=True, exist_ok=True)
+            prefix = (
+                f"{self.storage_path}{context}/"
+                if context and not context.endswith("/")
+                else f"{self.storage_path}{context}"
+            )
+            full_path = Path(prefix) / file_name
+
+            # Create parent directory for the file (including any subdirectories in file_name)
+            full_path.parent.mkdir(parents=True, exist_ok=True)
+
             if self._verbose:
-                print(f"\t * Saving in local path: {prefix}{file_name}")
-            pickle.dump(file, open(f"{prefix}{file_name}", "wb"))
+                print(f"\t * Saving in local path: {full_path}")
+
+            pickle.dump(file, open(full_path, "wb"))
+
             if self._verbose:
                 print("\t * Saved !")
             return file_name
@@ -123,7 +132,7 @@ class LocalStorage(BaseStorage):
         Returns:
             List[str]: A list of file names in the specified context.
         """
-        return os.listdir(context)
+        return os.listdir(f"{self.storage_path}{context}")
 
     def get_file_by_hashcode(self, hashcode: str, context: str) -> Any:
         """
@@ -139,11 +148,17 @@ class LocalStorage(BaseStorage):
         Raises:
             FileNotFoundError: If the file is not found in the specified context.
         """
-        prefix = f"{context}/" if context and not context.endswith("/") else context
-        if hashcode in os.listdir(prefix):
-            return open(f"{prefix}{hashcode}", "rb")
+        prefix = (
+            f"{self.storage_path}{context}/"
+            if context and not context.endswith("/")
+            else f"{self.storage_path}{context}"
+        )
+        full_path = Path(prefix) / hashcode
+
+        if full_path.exists():
+            return open(full_path, "rb")
         else:
-            raise FileNotFoundError(f"Couldn't find file {hashcode} in path {context}")
+            raise FileNotFoundError(f"Couldn't find file {hashcode} in path {prefix}")
 
     def check_if_exists(self, hashcode: str, context: str) -> bool:
         """
@@ -156,13 +171,13 @@ class LocalStorage(BaseStorage):
         Returns:
             bool: True if the file exists, False otherwise.
         """
-        try:
-            for file_n in os.listdir(context):
-                if file_n == hashcode:
-                    return True
-            return False
-        except FileNotFoundError:
-            return False
+        prefix = (
+            f"{self.storage_path}{context}/"
+            if context and not context.endswith("/")
+            else f"{self.storage_path}{context}"
+        )
+        full_path = Path(prefix) / hashcode
+        return full_path.exists()
 
     def download_file(self, hashcode: str, context: str) -> Any:
         """
@@ -192,104 +207,12 @@ class LocalStorage(BaseStorage):
         Raises:
             FileExistsError: If the file does not exist in the specified context.
         """
-        prefix = f"{context}/" if context and not context.endswith("/") else context
+        prefix = (
+            f"{self.storage_path}{context}/"
+            if context and not context.endswith("/")
+            else f"{self.storage_path}{context}"
+        )
         if os.path.exists(f"{prefix}{hashcode}"):
             os.remove(f"{prefix}{hashcode}")
         else:
             raise FileExistsError("No existe en la carpeta")
-
-
-# class LockingLocalStorage(BaseLockingStorage):
-#     """Local filesystem storage backend with atomic file-based locking.
-
-#     Implements storage and locking using the local filesystem. Lock atomicity
-#     is guaranteed through the O_CREAT | O_EXCL flags in os.open(), which
-#     provide atomic file creation at the kernel level.
-
-#     This backend is ideal for:
-#     - Single-machine parallel processing
-#     - Development and testing
-#     - CI/CD pipelines
-#     - Local experimentation
-
-#     The locking mechanism is safe for multiple processes on the same machine
-#     accessing the same filesystem (including NFS if properly configured).
-
-#     Attributes:
-#         base_path: Root directory for all storage operations.
-#         locks_dir: Directory where lock files are stored.
-
-#     Examples:
-#         Basic usage:
-
-#         ```python
-#         # Initialize storage
-#         storage = LocalStorage("./cache")
-
-#         # Store and retrieve files
-#         storage.upload_file("/tmp/model.pkl", "models/abc123/model")
-#         storage.download_file("models/abc123/model", "/tmp/loaded.pkl")
-
-#         # Distributed locking
-#         if storage.try_acquire_lock("model_abc123"):
-#             try:
-#                 # Your exclusive work here
-#                 train_and_save_model()
-#             finally:
-#                 storage.release_lock("model_abc123")
-#         ```
-
-#         Parallel processing example:
-
-#         ```python
-#         from multiprocessing import Pool
-
-#         def train_model(model_id):
-#             storage = LocalStorage("./cache")
-#             lock_name = f"model_{model_id}"
-
-#             if storage.try_acquire_lock(lock_name):
-#                 try:
-#                     print(f"Training {model_id}")
-#                     # Train model
-#                 finally:
-#                     storage.release_lock(lock_name)
-#             else:
-#                 print(f"Waiting for {model_id}")
-#                 storage.wait_for_unlock(lock_name)
-#                 # Load cached model
-
-#         # Run in parallel - only one process trains each model
-#         with Pool(4) as p:
-#             p.map(train_model, ["model_1", "model_2", "model_3"])
-#         ```
-
-#     Note:
-#         Lock files contain metadata (hostname, PID, timestamp) for debugging
-#         and stale lock detection.
-#     """
-
-#     def __init__(self, base_path: str):
-#         """Initialize local storage backend.
-
-#         Creates the base directory and locks subdirectory if they don't exist.
-
-#         Args:
-#             base_path: Root directory for storage. Can be relative or absolute.
-#                 Will be created if it doesn't exist.
-
-#         Examples:
-#             ```python
-#             # Relative path
-#             storage = LocalStorage("./cache")
-
-#             # Absolute path
-#             storage = LocalStorage("/var/ml-cache")
-
-#             # User home directory
-#             storage = LocalStorage("~/ml-experiments/cache")
-#             ```
-#         """
-#         self.storage_path = Path(base_path).expanduser().resolve()
-#         self.locks_dir = self.storage_path / "locks"
-#         self.locks_dir.mkdir(parents=True, exist_ok=True)

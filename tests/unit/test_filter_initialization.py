@@ -9,13 +9,13 @@ from labchain.base.exceptions import NotTrainableFilterError
 class TrainableFilter(BaseFilter):
     def __init__(self):
         super().__init__()
-        self.is_fitted = False
+        self._is_fitted = False
 
     def fit(self, x: XYData, y: Optional[XYData]) -> None:
-        self.is_fitted = True
+        self._is_fitted = True
 
     def predict(self, x: XYData) -> XYData:
-        if not self.is_fitted:
+        if not self._is_fitted:
             raise ValueError("This filter needs to be fitted before prediction")
         return x
 

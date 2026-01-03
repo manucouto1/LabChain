@@ -121,8 +121,8 @@ class BaseFactory(Generic[TypePlugable]):
             factory.ComponentA = ComponentA
             ```
         """
-        if name == "_foundry":
-            super().__setattr__(name, value)
+        if name.startswith("_") or name in ("manager",):
+            object.__setattr__(self, name, value)
         else:
             self._foundry[name] = value
 
@@ -223,7 +223,7 @@ class BaseFactory(Generic[TypePlugable]):
 
     def get(
         self, name: str, default: Type[TypePlugable] | None = None
-    ) -> Type[TypePlugable]:
+    ) -> Type[TypePlugable] | None:
         """
         Retrieve a component by name.
 
@@ -248,10 +248,6 @@ class BaseFactory(Generic[TypePlugable]):
         if name in self._foundry:
             return self._foundry[name]
         else:
-            if default is None:
-                raise AttributeError(
-                    f"'{self.__class__.__name__}' object has no attribute '{name}'"
-                )
             return default
 
     def print_available_components(self):

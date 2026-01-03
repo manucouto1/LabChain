@@ -1,8 +1,11 @@
+# labchain/base/base_clases.py
+
 from __future__ import annotations  # noqa: D100
 import hashlib
 import inspect
 from abc import ABC, abstractmethod
 from types import NotImplementedType
+
 from labchain.base.exceptions import NotTrainableFilterError
 from typing import (
     Any,
@@ -26,8 +29,6 @@ from labchain.base.base_types import Float, XYData
 
 from rich import print as rprint
 
-# inspect.getsource = dill.source.getsource
-
 __all__ = ["BasePlugin", "BaseFilter", "BaseMetric"]
 
 T = TypeVar("T")
@@ -48,15 +49,22 @@ class BasePlugin(ABC):
         - Inheritance of type annotations from abstract methods
         - JSON serialization and deserialization
         - Rich representation for debugging
+        - Strict attribute tracking rules for hash consistency
+
+    Attribute Rules:
+        1. Public attributes must be declared in __init__ signature and passed to super().__init__()
+        2. Alternatively, use **kwargs in __init__ to allow dynamic public attributes
+        3. Private attributes (_*) can be set freely as internal state
+        4. Methods and special attributes (__*) are never tracked
 
     Usage:
         To create a new plugin type, inherit from this class and implement
         the required methods. For example:
-
         ```python
         class MyCustomPlugin(BasePlugin):
             def __init__(self, param1: int, param2: str):
                 super().__init__(param1=param1, param2=param2)
+                self._internal_state = None  # Private: allowed
 
             def my_method(self):
                 # Custom implementation
@@ -98,6 +106,8 @@ class BasePlugin(ABC):
         and the typeguard library for runtime type checking.
     """
 
+    _hash: str | None = None
+
     def __new__(cls: type[Self], *args: Any, **kwargs: Any) -> Self:
         """
         Create a new instance of the BasePlugin class.
@@ -114,31 +124,75 @@ class BasePlugin(ABC):
         """
         instance = super().__new__(cls)
 
-        # Obtener la firma del método __init__
+        # Get the signature of the __init__ method
         init_signature = inspect.signature(cls.__init__)
 
-        instance.__dict__["_public_attributes"] = {
-            k: v
-            for k, v in kwargs.items()
-            if not k.startswith("_") and k in init_signature.parameters
-        }
-        instance.__dict__["_private_attributes"] = {
-            k: v
-            for k, v in kwargs.items()
-            if k.startswith("_") and k in init_signature.parameters
-        }
+        # Check if __init__ has **kwargs parameter
+        has_var_keyword = any(
+            p.kind == inspect.Parameter.VAR_KEYWORD
+            for p in init_signature.parameters.values()
+        )
 
-        # Apply typechecked to the __init__ method
-        init_method = cls.__init__
-        if init_method is not object.__init__:
-            cls.__init__ = typechecked(init_method)  # type: ignore[method-assign]
+        # Initialize attribute dictionaries and store init signature
+        instance.__dict__["_init_signature"] = init_signature
+        instance.__dict__["_has_var_keyword"] = has_var_keyword
+
+        # If **kwargs is present, ALL kwargs go to public/private attributes
+        # Otherwise, only those in the signature
+        if has_var_keyword:
+            instance.__dict__["_public_attributes"] = {
+                k: v for k, v in kwargs.items() if not k.startswith("_")
+            }
+            instance.__dict__["_private_attributes"] = {
+                k: v for k, v in kwargs.items() if k.startswith("_")
+            }
+        else:
+            instance.__dict__["_public_attributes"] = {
+                k: v
+                for k, v in kwargs.items()
+                if not k.startswith("_") and k in init_signature.parameters
+            }
+            instance.__dict__["_private_attributes"] = {
+                k: v
+                for k, v in kwargs.items()
+                if k.startswith("_") and k in init_signature.parameters
+            }
+
+        instance.__dict__["_initialization_complete"] = False
+
+        # Store the original __init__ if not already wrapped
+        if not hasattr(cls, "_original_init_stored"):
+            original_init = cls.__init__
+
+            # Apply typechecked FIRST to the original init (before wrapping)
+            if original_init is not object.__init__:
+                original_init = typechecked(original_init)
+
+            def wrapped_init(self, *init_args, **init_kwargs):
+                # Call the type-checked original __init__
+                result = original_init(self, *init_args, **init_kwargs)
+                # Automatically mark initialization as complete
+                if type(self).__name__ == cls.__name__:
+                    self.__dict__["_initialization_complete"] = True
+                return result
+
+            # Preserve metadata
+            wrapped_init.__name__ = getattr(original_init, "__name__", "__init__")
+            wrapped_init.__doc__ = getattr(original_init, "__doc__", None)
+
+            # Replace __init__ with wrapped version
+            cls.__init__ = wrapped_init  # type: ignore[method-assign]
+            cls._original_init_stored = True
 
         # Inherit type annotations from abstract methods
         cls.__inherit_annotations()
 
-        # Apply typechecked to all methods defined in the class
+        # Apply typechecked to all OTHER methods (not __init__, already done)
         for attr_name, attr_value in cls.__dict__.items():
-            if inspect.isfunction(attr_value) and attr_name != "__init__":
+            if inspect.isfunction(attr_value) and attr_name not in (
+                "__init__",
+                "__new__",
+            ):
                 setattr(cls, attr_name, typechecked(attr_value))
 
         return instance
@@ -180,17 +234,14 @@ class BasePlugin(ABC):
         """
         Initialize the BasePlugin instance.
 
-        This method separates public and private attributes based on their naming.
+        This method is called after __new__ has set up the attribute dictionaries.
+        It marks initialization as complete to enable strict attribute checking.
 
         Args:
             **kwargs (Any): Arbitrary keyword arguments that will be stored as attributes.
         """
-        self.__dict__["_public_attributes"] = {
-            k: v for k, v in kwargs.items() if not k.startswith("_")
-        }
-        self.__dict__["_private_attributes"] = {
-            k: v for k, v in kwargs.items() if k.startswith("_")
-        }
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     def __getattr__(self, name: str) -> Any:
         """
@@ -217,19 +268,93 @@ class BasePlugin(ABC):
         """
         Custom attribute setter that separates public and private attributes.
 
+        This method enforces the framework's attribute tracking rules:
+        1. Private attributes (_*) can be set freely (internal state)
+        2. Callables and special attributes (__*) are never tracked
+        3. Public attributes must be declared in __init__ signature OR
+           __init__ must have **kwargs to allow dynamic attributes
+        4. Violation of rule 3 raises AttributeError with helpful message
+
         Args:
             name (str): The name of the attribute to set.
             value (Any): The value to assign to the attribute.
+
+        Raises:
+            AttributeError: If attempting to set an undeclared public attribute
+                           without **kwargs in the constructor.
         """
-        if not hasattr(self, "_private_attributes"):
-            # During initialization, attributes go directly to __dict__
+        if "_public_attributes" not in self.__dict__:
+            # During __new__ phase, use default behavior
             super().__setattr__(name, value)
-        else:
-            if name.startswith("_"):
-                self.__dict__["_private_attributes"][name] = value
-            else:
+            return
+
+        # Skip callables and special attributes
+        if callable(value) or name.startswith("__"):
+            super().__setattr__(name, value)
+            return
+
+        initialization_complete = self.__dict__.get("_initialization_complete", False)
+
+        # Private attributes are always allowed
+        if name.startswith("_"):
+            self.__dict__["_private_attributes"][name] = value
+            super().__setattr__(name, value)
+            return
+
+        # For public attributes, check if allowed
+        init_signature = self.__dict__.get("_init_signature")
+        has_kwargs = self.__dict__.get("_has_var_keyword", False)
+
+        is_init_param = init_signature and name in init_signature.parameters
+
+        if not initialization_complete:
+            # During initialization: only track if it's an init parameter OR we have **kwargs
+            if is_init_param or has_kwargs:
                 self.__dict__["_public_attributes"][name] = value
-            super().__setattr__(name, value)
+                super().__setattr__(name, value)
+            else:
+                # Trying to set a public attribute that's not in the signature and no **kwargs
+                available_params = (
+                    list(init_signature.parameters.keys()) if init_signature else []
+                )
+                available_params = [
+                    p for p in available_params if p not in ("self", "args", "kwargs")
+                ]
+
+                raise AttributeError(
+                    f"Cannot set public attribute '{name}' on {self.__class__.__name__}. "
+                    f"This attribute is not declared in the __init__ signature.\n\n"
+                    f"Available options:\n"
+                    f"1. Add '{name}' to __init__ signature and pass to constructor:\n"
+                    f"   def __init__(self, {', '.join(available_params + [name])}):\n"
+                    f"       # Then instantiate with: {self.__class__.__name__}({', '.join(f'{p}=...' for p in available_params + [name])})\n\n"
+                    f"2. Add **kwargs to __init__ to accept dynamic attributes:\n"
+                    f"   def __init__(self, {', '.join(available_params)}, **kwargs):\n\n"
+                    f"3. Make it private (internal state) by renaming to '_{name}'\n\n"
+                    f"Current __init__ parameters: {available_params}"
+                )
+        else:
+            # After initialization: can only update existing attributes or if we have **kwargs
+            if has_kwargs or name in self.__dict__["_public_attributes"]:
+                self.__dict__["_public_attributes"][name] = value
+                super().__setattr__(name, value)
+            else:
+                available_params = (
+                    list(init_signature.parameters.keys()) if init_signature else []
+                )
+                available_params = [
+                    p for p in available_params if p not in ("self", "args", "kwargs")
+                ]
+
+                raise AttributeError(
+                    f"Cannot set public attribute '{name}' on {self.__class__.__name__}. "
+                    f"This attribute is not declared in the __init__ signature.\n\n"
+                    f"Available options:\n"
+                    f"1. Declare '{name}' in __init__ and pass to constructor\n"
+                    f"2. Add **kwargs to __init__ for dynamic attributes\n"
+                    f"3. Make it private by renaming to '_{name}'\n\n"
+                    f"Current __init__ parameters: {available_params}"
+                )
 
     def __repr__(self) -> str:
         """
@@ -290,11 +415,15 @@ class BasePlugin(ABC):
         included = {k: v for k, v in self._private_attributes.items() if k in include}
         dump = {
             "clazz": self.__class__.__name__,
+            "version_hash": self._hash,
             "params": jsonable_encoder(
                 self._public_attributes,
                 custom_encoder={
                     BasePlugin: lambda v: v.item_dump(include=include, **kwargs),
-                    type: lambda v: {"clazz": v.__name__},
+                    type: lambda v: {
+                        "clazz": v.__name__,
+                        "version_hash": v._hash,
+                    },
                     np.integer: lambda x: int(x),
                     np.floating: lambda x: float(x),
                 },
@@ -307,7 +436,10 @@ class BasePlugin(ABC):
                     included,
                     custom_encoder={
                         BasePlugin: lambda v: v.item_dump(include=include, **kwargs),
-                        type: lambda v: {"clazz": v.__name__},
+                        type: lambda v: {
+                            "clazz": v.__name__,
+                            "version_hash": v._hash,
+                        },
                         np.integer: lambda x: int(x),
                         np.floating: lambda x: float(x),
                     },
@@ -390,7 +522,17 @@ class BasePlugin(ABC):
             BasePlugin | Type[BasePlugin]: The reconstructed plugin instance or class.
         """
 
-        level_clazz: Type[BasePlugin] = factory[dump_dict["clazz"]]
+        clazz_name: str = dump_dict["clazz"]
+        v_hash: str | None = dump_dict.get("version_hash")
+
+        level_clazz: Type[BasePlugin] | None
+        if v_hash and hasattr(factory, "get_version"):
+            level_clazz = factory.get_version(clazz_name, v_hash)  # type: ignore
+        else:
+            level_clazz = factory.get(clazz_name)
+
+        if level_clazz is None:
+            raise ValueError(f"No class found for {clazz_name}")  # type: ignore
 
         if "params" in dump_dict:
             level_params: Dict[str, Any] = {}
@@ -438,26 +580,25 @@ class BaseFilter(BasePlugin):
     Usage:
         To create a new filter type, inherit from this class and implement
         the required methods. For example:
-
         ```python
         class MyCustomFilter(BaseFilter):
             def __init__(self, n_components: int = 2):
                 super().__init__(n_components=n_components)
-                self.model = None
+                self._model = None  # Private: internal state
 
             def fit(self, x: XYData, y: Optional[XYData] = None) -> None:
                 self._print_acction("Fitting MyCustomFilter")
                 # Implement fitting logic here
                 data = x.value
-                self.model = np.linalg.svd(data - np.mean(data, axis=0), full_matrices=False)
+                self._model = np.linalg.svd(data - np.mean(data, axis=0), full_matrices=False)
 
             def predict(self, x: XYData) -> XYData:
                 self._print_acction("Predicting with MyCustomFilter")
-                if self.model is None:
+                if self._model is None:
                     raise ValueError("Model not fitted yet.")
                 # Implement prediction logic here
                 data = x.value
-                U, s, Vt = self.model
+                U, s, Vt = self._model
                 transformed = np.dot(data - np.mean(data, axis=0), Vt.T[:, :self.n_components])
                 return XYData(_value=transformed, _hash=x._hash, _path=self._m_path)
         ```
@@ -550,11 +691,11 @@ class BaseFilter(BasePlugin):
         self._original_fit = self.fit
         self._original_predict = self.predict
 
-        # Replace fit and predict methods
+        # Replace fit and predict methods - use __dict__ directly to avoid __setattr__
         if hasattr(self, "fit"):
-            self.__setattr__("fit", self._pre_fit_wrapp)
+            self.__dict__["fit"] = self._pre_fit_wrapp
         if hasattr(self, "predict"):
-            self.__setattr__("predict", self._pre_predict_wrapp)
+            self.__dict__["predict"] = self._pre_predict_wrapp
 
         super().__init__(*args, **kwargs)
 
@@ -594,7 +735,7 @@ class BaseFilter(BasePlugin):
         """
         return hash((type(self), frozenset(self._public_attributes.items())))
 
-    def _pre_fit(self, x: XYData, y: Optional[XYData]) -> Tuple[str, str, str]:
+    def _pre_fit(self, x: XYData, y: Optional[XYData] = None) -> Tuple[str, str, str]:
         """
         Perform pre-processing steps before fitting the model.
 
@@ -648,7 +789,9 @@ class BaseFilter(BasePlugin):
         except Exception:
             raise ValueError("Trainable filter model not trained or loaded")
 
-    def _pre_fit_wrapp(self, x: XYData, y: Optional[XYData]) -> Optional[float | dict]:
+    def _pre_fit_wrapp(
+        self, x: XYData, y: Optional[XYData] = None
+    ) -> Optional[float | dict]:
         """
         Wrapper method for the fit function.
 
@@ -849,7 +992,6 @@ class BaseMetric(BasePlugin):
 
     Usage:
         To create a new metric, inherit from this class and implement the evaluate method:
-
         ```python
         from framework3.base.base_clases import BaseMetric
         from framework3.base.base_types import XYData

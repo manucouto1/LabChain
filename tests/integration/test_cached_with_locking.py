@@ -18,12 +18,12 @@ class SlowTrainingFilter(BaseFilter):
     def __init__(self, training_time: float = 2.0):
         super().__init__()
         self.training_time = training_time
-        self.trained = False
+        self._trained = False
 
     def fit(self, x, y):
         """Simulate slow training."""
         time.sleep(self.training_time)
-        self.trained = True
+        self._trained = True
 
     def predict(self, x):
         """Simple prediction."""
@@ -86,7 +86,7 @@ class TestCachedWithLockingBasics:
 
         # Should take time to train
         assert elapsed >= 0.4
-        assert filter_obj.trained is True
+        assert filter_obj._trained is True
 
     def test_second_fit_loads_from_cache(self, temp_storage):
         """Test that second fit loads from cache without training."""
@@ -196,7 +196,7 @@ class TestCachedWithLockingParallel:
             """Process that tries to predict."""
             storage = LockingLocalStorage(storage_path)
             filter_obj = SlowTrainingFilter(training_time=0.1)
-            filter_obj.trained = True  # Mark as trained
+            filter_obj._trained = True  # Mark as trained
 
             cached = CachedWithLocking(
                 filter=filter_obj,
@@ -358,7 +358,7 @@ class TestCachedWithLockingCrashRecovery:
 
         # Should have trained (not waited for timeout)
         assert elapsed < 2.0
-        assert filter_obj.trained is True
+        assert filter_obj._trained is True
 
 
 class TestCachedWithLockingOverwrite:
@@ -376,7 +376,7 @@ class TestCachedWithLockingOverwrite:
         y = XYData.mock(np.array([4, 5, 6]))
 
         cached1.fit(x, y)
-        assert filter_obj1.trained is True
+        assert filter_obj1._trained is True
 
         # Second training with overwrite
         filter_obj2 = SlowTrainingFilter(training_time=0.5)
@@ -393,7 +393,7 @@ class TestCachedWithLockingOverwrite:
 
         # Should retrain (not load from cache)
         assert elapsed >= 0.4
-        assert filter_obj2.trained is True
+        assert filter_obj2._trained is True
 
 
 class TestCachedWithLockingVerbose:
