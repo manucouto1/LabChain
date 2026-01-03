@@ -7,12 +7,12 @@ This tutorial will guide you through a simple example of using F3Pipeline, inclu
 First, we import the required classes and functions:
 
 ```python
-from framework3 import F3Pipeline
-from framework3.plugins.filters import StandardScalerPlugin
-from framework3.plugins.filters import ClassifierSVMPlugin
-from framework3.plugins.metrics import F1
-from framework3.base import XYData
-from framework3.plugins.filters import Cached
+from labchain import F3Pipeline
+from labchain.plugins.filters import StandardScalerPlugin
+from labchain.plugins.filters import ClassifierSVMPlugin
+from labchain.plugins.metrics import F1
+from labchain.base import XYData
+from labchain.plugins.filters import Cached
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 
@@ -201,4 +201,4 @@ In this second execution, you should notice that the `StandardScalerPlugin` uses
 
 ## Conclusion
 
-This tutorial has demonstrated how to use F3Pipeline with the Cache functionality in Framework3. We've seen how to create a pipeline that includes a cached filter, how to train the model, make predictions, and evaluate performance. We've also shown how caching can improve performance in subsequent runs.
+This tutorial has demonstrated how to use F3Pipeline with the Cache functionality in labchain. We've seen how to create a pipeline that includes a cached filter, how to train the model, make predictions, and evaluate performance. We've also shown how caching can improve performance in subsequent runs.

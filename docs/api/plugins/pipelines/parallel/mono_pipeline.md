@@ -1,9 +1,9 @@
 # MonoPipeline
 
-The `MonoPipeline` class is part of the `framework3.plugins.pipelines.parallel` module and is designed to run multiple pipelines in parallel, combining their outputs to create new features. This pipeline is ideal for scenarios where different models or transformations need to be applied simultaneously to the same dataset.
+The `MonoPipeline` class is part of the `labchain.plugins.pipelines.parallel` module and is designed to run multiple pipelines in parallel, combining their outputs to create new features. This pipeline is ideal for scenarios where different models or transformations need to be applied simultaneously to the same dataset.
 
 ## Module Contents
-::: framework3.plugins.pipelines.parallel.parallel_mono_pipeline
+::: labchain.plugins.pipelines.parallel.parallel_mono_pipeline
     options:
         show_root_heading: true
         show_source: true
@@ -27,8 +27,8 @@ The `MonoPipeline` class is part of the `framework3.plugins.pipelines.parallel` 
 
 ### Creating and Using MonoPipeline
 ```python
-from framework3.plugins.pipelines.parallel.mono_pipeline import MonoPipeline
-from framework3.base import XYData
+from labchain.plugins.pipelines.parallel.mono_pipeline import MonoPipeline
+from labchain.base import XYData
 
 # Define filters (assuming filters are defined elsewhere)
 filters = [Filter1(), Filter2()]

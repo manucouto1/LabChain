@@ -1,6 +1,6 @@
 # F3Pipeline
 
-::: framework3.plugins.pipelines.sequential.f3_pipeline
+::: labchain.plugins.pipelines.sequential.f3_pipeline
 
 ## Overview
 
@@ -18,11 +18,11 @@ The F3Pipeline is a flexible and powerful pipeline implementation in the LabChai
 Here's a simple example of how to create and use an F3Pipeline:
 
 ```python
-from framework3.plugins.pipelines import F3Pipeline
-from framework3.plugins.filters.transformation import PCAPlugin
-from framework3.plugins.filters.classification import SVMClassifier
-from framework3.plugins.metrics import F1Score, Accuracy
-from framework3.base.base_types import XYData
+from labchain.plugins.pipelines import F3Pipeline
+from labchain.plugins.filters.transformation import PCAPlugin
+from labchain.plugins.filters.classification import SVMClassifier
+from labchain.plugins.metrics import F1Score, Accuracy
+from labchain.base.base_types import XYData
 import numpy as np
 
 # Create a pipeline
@@ -56,9 +56,9 @@ print(results)
 F3Pipeline supports nesting, allowing you to create more complex workflows:
 
 ```python
-from framework3.plugins.pipelines import F3Pipeline
-from framework3.plugins.filters.transformation import NormalizationPlugin
-from framework3.plugins.filters.feature_selection import VarianceThresholdPlugin
+from labchain.plugins.pipelines import F3Pipeline
+from labchain.plugins.filters.transformation import NormalizationPlugin
+from labchain.plugins.filters.feature_selection import VarianceThresholdPlugin
 
 # Create a sub-pipeline
 feature_engineering = F3Pipeline(
@@ -89,8 +89,8 @@ results = main_pipeline.evaluate(X, y, y_pred)
 F3Pipeline supports caching of intermediate results and fitted models for improved performance:
 
 ```python
-from framework3.plugins.filters.cached_filter import Cached
-from framework3.plugins.filters.transformation import PCAPlugin
+from labchain.plugins.filters.cached_filter import Cached
+from labchain.plugins.filters.transformation import PCAPlugin
 
 pipeline = F3Pipeline(
     plugins=[

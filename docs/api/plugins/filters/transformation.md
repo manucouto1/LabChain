@@ -1,4 +1,4 @@
-::: framework3.plugins.filters.transformation
+::: labchain.plugins.filters.transformation
     options:
       show_root_heading: true
       show_source: true

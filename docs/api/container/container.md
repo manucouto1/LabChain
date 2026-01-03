@@ -1,4 +1,4 @@
-::: framework3.container.container
+::: labchain.container.container
     options:
       show_root_heading: true
       show_source: true

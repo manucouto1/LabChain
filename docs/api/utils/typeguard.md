@@ -1,4 +1,4 @@
-::: framework3.utils.patch_type_guard
+::: labchain.utils.patch_type_guard
     options:
       show_root_heading: true
       show_source: true

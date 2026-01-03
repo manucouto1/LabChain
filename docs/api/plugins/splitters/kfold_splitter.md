@@ -1,4 +1,4 @@
-::: framework3.plugins.splitter.cross_validation_splitter
+::: labchain.plugins.splitter.cross_validation_splitter
     options:
       show_root_heading: true
       show_source: true

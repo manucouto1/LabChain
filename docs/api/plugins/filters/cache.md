@@ -1,4 +1,4 @@
-::: framework3.plugins.filters.cache.cached_filter
+::: labchain.plugins.filters.cache.cached_filter
     options:
       show_root_heading: true
       show_source: true

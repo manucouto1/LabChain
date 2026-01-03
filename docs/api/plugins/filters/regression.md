@@ -1,4 +1,4 @@
-::: framework3.plugins.filters.regression
+::: labchain.plugins.filters.regression
     options:
       show_root_heading: true
       show_source: true

@@ -1,6 +1,6 @@
 # Clustering Metrics
 
-::: framework3.plugins.metrics.clustering
+::: labchain.plugins.metrics.clustering
 
 ## Overview
 
@@ -15,8 +15,8 @@ The Normalized Mutual Information score is implemented in the `NMI` class. It me
 #### Usage
 
 ```python
-from framework3.plugins.metrics.clustering import NMI
-from framework3.base.base_types import XYData
+from labchain.plugins.metrics.clustering import NMI
+from labchain.base.base_types import XYData
 
 nmi_metric = NMI()
 score = nmi_metric.evaluate(x_data, y_true, y_pred)
@@ -29,8 +29,8 @@ The Adjusted Rand Index is implemented in the `ARI` class. It measures the simil
 #### Usage
 
 ```python
-from framework3.plugins.metrics.clustering import ARI
-from framework3.base.base_types import XYData
+from labchain.plugins.metrics.clustering import ARI
+from labchain.base.base_types import XYData
 
 ari_metric = ARI()
 score = ari_metric.evaluate(x_data, y_true, y_pred)
@@ -43,8 +43,8 @@ The Silhouette Score is implemented in the `Silhouette` class. It measures how s
 #### Usage
 
 ```python
-from framework3.plugins.metrics.clustering import Silhouette
-from framework3.base.base_types import XYData
+from labchain.plugins.metrics.clustering import Silhouette
+from labchain.base.base_types import XYData
 
 silhouette_metric = Silhouette()
 score = silhouette_metric.evaluate(x_data, y_true, y_pred)
@@ -57,8 +57,8 @@ The Calinski-Harabasz Index is implemented in the `CalinskiHarabasz` class. It's
 #### Usage
 
 ```python
-from framework3.plugins.metrics.clustering import CalinskiHarabasz
-from framework3.base.base_types import XYData
+from labchain.plugins.metrics.clustering import CalinskiHarabasz
+from labchain.base.base_types import XYData
 
 ch_metric = CalinskiHarabasz()
 score = ch_metric.evaluate(x_data, y_true, y_pred)
@@ -71,8 +71,8 @@ The Homogeneity Score is implemented in the `Homogeneity` class. It measures whe
 #### Usage
 
 ```python
-from framework3.plugins.metrics.clustering import Homogeneity
-from framework3.base.base_types import XYData
+from labchain.plugins.metrics.clustering import Homogeneity
+from labchain.base.base_types import XYData
 
 homogeneity_metric = Homogeneity()
 score = homogeneity_metric.evaluate(x_data, y_true, y_pred)
@@ -85,8 +85,8 @@ The Completeness Score is implemented in the `Completeness` class. It measures w
 #### Usage
 
 ```python
-from framework3.plugins.metrics.clustering import Completeness
-from framework3.base.base_types import XYData
+from labchain.plugins.metrics.clustering import Completeness
+from labchain.base.base_types import XYData
 
 completeness_metric = Completeness()
 score = completeness_metric.evaluate(x_data, y_true, y_pred)
@@ -97,9 +97,9 @@ score = completeness_metric.evaluate(x_data, y_true, y_pred)
 In this example, we'll demonstrate how to use the Clustering Metrics to evaluate the performance of a clustering model.
 
 ```python
-from framework3.plugins.filters.clustering.kmeans import KMeansPlugin
-from framework3.plugins.metrics.clustering import NMI, ARI, Silhouette, CalinskiHarabasz, Homogeneity, Completeness
-from framework3.base.base_types import XYData
+from labchain.plugins.filters.clustering.kmeans import KMeansPlugin
+from labchain.plugins.metrics.clustering import NMI, ARI, Silhouette, CalinskiHarabasz, Homogeneity, Completeness
+from labchain.base.base_types import XYData
 from sklearn.datasets import make_blobs
 import numpy as np
 

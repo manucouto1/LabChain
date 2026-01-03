@@ -1,4 +1,4 @@
-::: framework3.base.base_factory
+::: labchain.base.base_factory
     options:
       show_root_heading: true
       show_source: true

@@ -1,6 +1,6 @@
 import pytest
-from framework3.utils.pyspark import PySparkMapReduce
-from framework3.base import XYData
+from labchain.utils.pyspark import PySparkMapReduce
+from labchain.base import XYData
 
 
 @pytest.fixture

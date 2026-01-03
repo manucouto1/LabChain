@@ -1,4 +1,4 @@
-::: framework3.plugins.optimizer.wandb_optimizer
+::: labchain.plugins.optimizer.wandb_optimizer
     options:
       show_root_heading: true
       show_source: true

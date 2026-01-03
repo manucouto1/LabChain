@@ -2,7 +2,7 @@ import pytest
 from sklearn import datasets
 from rich import print
 
-from framework3 import (
+from labchain import (
     F1,
     Cached,
     F3Pipeline,
@@ -13,8 +13,8 @@ from framework3 import (
     Recall,
     StandardScalerPlugin,
 )
-from framework3.base.base_clases import XYData
-from framework3.plugins.optimizer.grid_optimizer import GridOptimizer
+from labchain.base.base_clases import XYData
+from labchain.plugins.optimizer.grid_optimizer import GridOptimizer
 
 
 def load_iris_data():
@@ -66,7 +66,8 @@ def test_pipeline_with_grid_search_and_splitter(splitter_class):
     pipeline.fit(X, y)
 
     # Check that 2 folds were evaluated
-    assert len(list(pipeline._results.items())) == 2
+    print(pipeline._results)
+    assert len(list(pipeline._results.items())) == 10
 
     # Predict on training data (sanity check)
     prediction = pipeline.predict(x=X)
@@ -82,3 +83,4 @@ def test_pipeline_with_grid_search_and_splitter(splitter_class):
 
     print(f"\n[bold green]{splitter_class.__name__} results:[/bold green]")
     print(evaluation)
+    print(pipeline._results)

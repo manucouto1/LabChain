@@ -1,4 +1,4 @@
-::: framework3.base.base_clases.BasePlugin
+::: labchain.base.base_clases.BasePlugin
     options:
       show_root_heading: true
       show_source: true

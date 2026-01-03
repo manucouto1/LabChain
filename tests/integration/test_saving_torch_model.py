@@ -1,10 +1,10 @@
 import pytest
 import torch
-from framework3.base.base_types import XYData
-from framework3.base.base_clases import BaseFilter
-from framework3.container.container import Container
-from framework3.plugins.filters.cache.cached_filter import Cached
-from framework3.plugins.storage.local_storage import LocalStorage
+from labchain.base.base_types import XYData
+from labchain.base.base_clases import BaseFilter
+from labchain.container.container import Container
+from labchain.plugins.filters.cache.cached_filter import Cached
+from labchain.plugins.storage.local_storage import LocalStorage
 from transformers import BertTokenizer, BertModel
 
 

@@ -1,4 +1,4 @@
-::: framework3.base.base_clases.BaseFilter
+::: labchain.base.base_clases.BaseFilter
     options:
       show_root_heading: true
       show_source: true

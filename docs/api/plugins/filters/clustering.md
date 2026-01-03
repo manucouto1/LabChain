@@ -1,10 +1,10 @@
 # Clustering Filters
 
-::: framework3.plugins.filters.clustering
+::: labchain.plugins.filters.clustering
 
 ## Overview
 
-The Clustering Filters module in framework3 provides a collection of unsupervised learning algorithms for clustering data. These filters are designed to work seamlessly within the framework3 ecosystem, offering a consistent interface and enhanced functionality for various clustering tasks.
+The Clustering Filters module in labchain provides a collection of unsupervised learning algorithms for clustering data. These filters are designed to work seamlessly within the labchain ecosystem, offering a consistent interface and enhanced functionality for various clustering tasks.
 
 ## Available Clustering Algorithms
 
@@ -15,7 +15,7 @@ The K-Means clustering algorithm is implemented in the `KMeansFilter`. This popu
 #### Usage
 
 ```python
-from framework3.plugins.filters.clustering.kmeans import KMeansFilter
+from labchain.plugins.filters.clustering.kmeans import KMeansFilter
 
 kmeans_clusterer = KMeansFilter(n_clusters=3, init='k-means++', n_init=10, max_iter=300)
 ```
@@ -34,7 +34,7 @@ The Density-Based Spatial Clustering of Applications with Noise (DBSCAN) algorit
 #### Usage
 
 ```python
-from framework3.plugins.filters.clustering.dbscan import DBSCANFilter
+from labchain.plugins.filters.clustering.dbscan import DBSCANFilter
 
 dbscan_clusterer = DBSCANFilter(eps=0.5, min_samples=5)
 ```
@@ -49,10 +49,10 @@ dbscan_clusterer = DBSCANFilter(eps=0.5, min_samples=5)
 In this example, we'll demonstrate how to use the Clustering Filters with synthetic data, showcasing both K-Means and DBSCAN algorithms, as well as integration with GridSearchCV for parameter tuning.
 
 ```python
-from framework3.plugins.pipelines.gs_cv_pipeline import GridSearchCVPipeline
-from framework3.plugins.filters.clustering.kmeans import KMeansFilter
-from framework3.plugins.filters.clustering.dbscan import DBSCANFilter
-from framework3.base.base_types import XYData
+from labchain.plugins.pipelines.gs_cv_pipeline import GridSearchCVPipeline
+from labchain.plugins.filters.clustering.kmeans import KMeansFilter
+from labchain.plugins.filters.clustering.dbscan import DBSCANFilter
+from labchain.base.base_types import XYData
 from sklearn.datasets import make_blobs, make_moons
 from sklearn.metrics import silhouette_score
 import numpy as np
@@ -106,7 +106,7 @@ print("DBSCAN Silhouette Score:", dbscan_silhouette)
 This example demonstrates how to:
 
 1. Generate synthetic datasets suitable for different clustering algorithms
-2. Create XYData objects for use with framework3
+2. Create XYData objects for use with labchain
 3. Set up GridSearchCV pipelines for both K-Means and DBSCAN clustering
 4. Fit the models and make predictions
 5. Evaluate the models using silhouette scores
@@ -127,4 +127,4 @@ This example demonstrates how to:
 
 ## Conclusion
 
-The Clustering Filters module in framework3 provides a powerful set of tools for unsupervised learning tasks. By leveraging these filters in combination with other framework3 components, you can build efficient and effective clustering pipelines. The example with synthetic data demonstrates how easy it is to use these clustering algorithms and integrate them with GridSearchCV for parameter tuning.
+The Clustering Filters module in labchain provides a powerful set of tools for unsupervised learning tasks. By leveraging these filters in combination with other labchain components, you can build efficient and effective clustering pipelines. The example with synthetic data demonstrates how easy it is to use these clustering algorithms and integrate them with GridSearchCV for parameter tuning.

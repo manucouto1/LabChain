@@ -1,16 +1,16 @@
-# Data Ingestion and Storage in Framework3
+# Data Ingestion and Storage in labchain
 
-This tutorial demonstrates how to use different storage backends in Framework3 for storing and retrieving data, including local storage and Amazon S3.
+This tutorial demonstrates how to use different storage backends in labchain for storing and retrieving data, including local storage and Amazon S3.
 
 ## Prerequisites
 
 Before running this example, make sure you have:
 
-1. Framework3 installed
+1. labchain installed
 2. Necessary libraries imported:
    ```python
-   from framework3.container import Container
-   from framework3.plugins.storage import S3Storage
+   from labchain.container import Container
+   from labchain.plugins.storage import S3Storage
    import pandas as pd
    import numpy as np
    import os
@@ -37,7 +37,7 @@ df = pd.DataFrame({
 
 ## 2. Local Storage
 
-By default, Framework3 uses local storage. Here's how to use it:
+By default, labchain uses local storage. Here's how to use it:
 
 ### Storing Data Locally
 
@@ -227,7 +227,7 @@ Data deleted successfully from S3
 ```
 ## Conclusion
 
-This tutorial demonstrated how to use both local storage and S3 storage in Framework3 to:
+This tutorial demonstrated how to use both local storage and S3 storage in labchain to:
 
 1. Store data
 2. List stored data

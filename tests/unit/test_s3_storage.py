@@ -6,7 +6,7 @@ import io
 from moto import mock_aws
 
 
-from framework3.plugins.storage import S3Storage
+from labchain.plugins.storage import S3Storage
 
 
 @pytest.fixture
@@ -41,7 +41,7 @@ def test_upload_file(s3_storage):
     assert result == file_name
     # Verify the file was uploaded
     response = s3_storage._client.get_object(
-        Bucket=s3_storage.bucket, Key=f"/{file_name}"
+        Bucket=s3_storage.bucket, Key=f"{file_name}"
     )
     content = pickle.loads(response["Body"].read())
     assert content == test_data
@@ -90,7 +90,7 @@ def test_get_file_by_hashcode(s3_storage, s3_client):
 def test_check_if_exists_true(s3_storage, s3_client):
     file_id = "existing_file.txt"
     s3_client.put_object(
-        Bucket=s3_storage.bucket, Key=f"/{file_id}", Body=b"test content"
+        Bucket=s3_storage.bucket, Key=f"{file_id}", Body=b"test content"
     )
     result = s3_storage.check_if_exists(file_id, "")
     assert result is True
@@ -107,7 +107,7 @@ def test_download_file(s3_storage, s3_client):
     test_data = {"key": "value"}
     # Upload a test file
     s3_client.put_object(
-        Bucket=s3_storage.bucket, Key=f"/{file_id}", Body=pickle.dumps(test_data)
+        Bucket=s3_storage.bucket, Key=f"{file_id}", Body=pickle.dumps(test_data)
     )
     # Download and deserialize the file
     downloaded_data = s3_storage.download_file(file_id, "")

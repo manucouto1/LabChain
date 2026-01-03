@@ -1,4 +1,4 @@
-::: framework3.base.exceptions
+::: labchain.base.exceptions
     options:
       show_root_heading: true
       show_source: true

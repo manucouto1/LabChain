@@ -1,4 +1,4 @@
-::: framework3.plugins.optimizer.sklearn_optimizer
+::: labchain.plugins.optimizer.sklearn_optimizer
     options:
       show_root_heading: true
       show_source: true

@@ -1,4 +1,4 @@
-::: framework3.base.base_clases.BaseMetric
+::: labchain.base.base_clases.BaseMetric
     options:
       show_root_heading: true
       show_source: true

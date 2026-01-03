@@ -1,4 +1,4 @@
-from framework3 import BaseMetric, Container, XYData, Precission
+from labchain import BaseMetric, Container, XYData, Precission
 
 import numpy as np
 

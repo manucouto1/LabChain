@@ -1,4 +1,4 @@
-::: framework3.base.base_map_reduce
+::: labchain.base.base_map_reduce
     options:
       show_root_heading: true
       show_source: true

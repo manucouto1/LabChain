@@ -1,4 +1,4 @@
-::: framework3.base.base_optimizer
+::: labchain.base.base_optimizer
     options:
       show_root_heading: true
       show_source: true

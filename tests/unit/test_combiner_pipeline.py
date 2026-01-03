@@ -1,8 +1,8 @@
 import pytest
 import numpy as np
-from framework3.base import XYData, BaseFilter
-from framework3.plugins.pipelines.parallel.parallel_mono_pipeline import MonoPipeline
-from framework3.base.base_clases import BaseMetric
+from labchain.base import XYData, BaseFilter
+from labchain.plugins.pipelines.parallel.parallel_mono_pipeline import MonoPipeline
+from labchain.base.base_clases import BaseMetric
 
 
 class DummyFilter(BaseFilter):

@@ -1,4 +1,4 @@
-::: framework3.plugins.filters.grid_search
+::: labchain.plugins.filters.grid_search
     options:
       show_root_heading: true
       show_source: true

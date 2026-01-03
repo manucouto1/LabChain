@@ -2,16 +2,16 @@ import pytest
 import numpy as np
 from sklearn import datasets
 from unittest.mock import MagicMock, ANY
-from framework3 import MonoPipeline
-from framework3.plugins.filters.cache.cached_filter import Cached
-from framework3.base import BaseFilter, XYData
-from framework3.plugins.filters.transformation.pca import PCAPlugin
-from framework3.plugins.filters.transformation.scaler import StandardScalerPlugin
-from framework3.plugins.pipelines.parallel.parallel_hpc_pipeline import HPCPipeline
-from framework3.plugins.pipelines.sequential.f3_pipeline import F3Pipeline
-from framework3.plugins.filters.classification.svm import ClassifierSVMPlugin
-from framework3.plugins.filters.classification.knn import KnnFilter
-from framework3.plugins.storage.local_storage import LocalStorage
+from labchain import MonoPipeline
+from labchain.plugins.filters.cache.cached_filter import Cached
+from labchain.base import BaseFilter, XYData
+from labchain.plugins.filters.transformation.pca import PCAPlugin
+from labchain.plugins.filters.transformation.scaler import StandardScalerPlugin
+from labchain.plugins.pipelines.parallel.parallel_hpc_pipeline import HPCPipeline
+from labchain.plugins.pipelines.sequential.f3_pipeline import F3Pipeline
+from labchain.plugins.filters.classification.svm import ClassifierSVMPlugin
+from labchain.plugins.filters.classification.knn import KnnFilter
+from labchain.plugins.storage.local_storage import LocalStorage
 from rich import print
 
 
@@ -34,7 +34,7 @@ def test_data():
 @pytest.fixture
 def mock_storage():
     storage = MagicMock(spec=LocalStorage)
-    storage.get_root_path.return_value = "/root"
+    storage.get_root_path.return_value = "root/"
     return storage
 
 
@@ -69,7 +69,7 @@ def test_cached_pipeline_storage_interactions(store_cached_pipelines, test_data)
     filter._pre_predict(x)
 
     mock_storage.upload_file.assert_any_call(
-        file=ANY, context=f"/root/{m_path}", file_name="model"
+        file=ANY, context=f"root/{m_path}", file_name="model"
     )
 
 
@@ -250,10 +250,6 @@ def test_cached_filter_in_parallel_pipeline_consistency():
             pipeline_a,
         ]
     )
-
-    parallel_mono_1.init()
-    parallel_mono_2.init()
-    parallel_mono_3.init()
 
     x = XYData.mock(np.array([[1, 2, 3]]))
 

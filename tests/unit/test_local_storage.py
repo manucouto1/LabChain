@@ -2,7 +2,7 @@ from pathlib import Path
 import pytest
 import os
 import pickle
-from framework3.plugins.storage import LocalStorage
+from labchain.plugins.storage import LocalStorage
 
 
 @pytest.fixture
@@ -21,9 +21,7 @@ def test_upload_file(local_storage):
     test_data = {"key": "value"}
     file_name = "test_file.pkl"
 
-    result = local_storage.upload_file(
-        file=test_data, file_name=file_name, context=local_storage.get_root_path()
-    )
+    result = local_storage.upload_file(file=test_data, file_name=file_name, context="/")
 
     assert result == file_name
     assert os.path.exists(os.path.join(local_storage.get_root_path(), file_name))
@@ -39,11 +37,9 @@ def test_upload_file_exception(local_storage, mocker):
     file_name = "test_file.pkl"
 
     # Mock the pickle.dump function to raise an exception
-    mocker.patch("pickle.dump", side_effect=Exception("Mocked error"))
+    mocker.patch("cloudpickle.dump", side_effect=Exception("Mocked error"))
 
-    result = local_storage.upload_file(
-        test_data, file_name, local_storage.get_root_path()
-    )
+    result = local_storage.upload_file(test_data, file_name, "/")
 
     assert result is None
     assert os.path.exists(os.path.join(local_storage.get_root_path(), file_name))
@@ -53,10 +49,10 @@ def test_list_stored_files(local_storage):
     # Create some test files
     test_files = ["file1.txt", "file2.pkl", "file3.bin"]
     for file_name in test_files:
-        local_storage.upload_file("", file_name, local_storage.get_root_path())
+        local_storage.upload_file("", file_name, "/")
 
     # Call the method to list stored files
-    stored_files = local_storage.list_stored_files(local_storage.get_root_path())
+    stored_files = local_storage.list_stored_files("/")
 
     # Check if the returned list contains all the test files
     assert set(stored_files) == set(test_files)
@@ -79,9 +75,7 @@ def test_get_file_by_hashcode(local_storage):
         f.write(test_content)
 
     # Retrieve the file using get_file_by_hashcode
-    retrieved_file = local_storage.get_file_by_hashcode(
-        test_file_name, local_storage.get_root_path()
-    )
+    retrieved_file = local_storage.get_file_by_hashcode(test_file_name, "/")
 
     # Assert that the retrieved file is a file object
     assert hasattr(retrieved_file, "read")
@@ -102,16 +96,14 @@ def test_get_file_by_hashcode(local_storage):
 def test_get_non_existent_file(local_storage):
     non_existent_file = "non_existent_file.txt"
     with pytest.raises(FileNotFoundError) as excinfo:
-        local_storage.get_file_by_hashcode(
-            non_existent_file, local_storage.get_root_path()
-        )
+        local_storage.get_file_by_hashcode(non_existent_file, "/")
         print(str(excinfo.value))
         print(
             f"Couldn't find file {non_existent_file} in path {local_storage.get_root_path()}"
         )
     assert (
         str(excinfo.value)
-        == f"Couldn't find file {non_existent_file} in path {local_storage.get_root_path()}"
+        == f"Couldn't find file {non_existent_file} in path {local_storage.get_root_path()}/"
     )
 
 
@@ -119,10 +111,10 @@ def test_check_if_exists_true(local_storage):
     # Create a test file
     test_file = "test_file.txt"
     test_content = "Test content"
-    local_storage.upload_file(test_content, test_file, local_storage.get_root_path())
+    local_storage.upload_file(test_content, test_file, "")
 
     # Check if the file exists using its name as hashcode
-    result = local_storage.check_if_exists(test_file, local_storage.get_root_path())
+    result = local_storage.check_if_exists(test_file, "")
 
     # Assert that the file exists
     assert result is True
@@ -133,9 +125,7 @@ def test_check_if_exists_true(local_storage):
 
 def test_check_if_exists_false(local_storage):
     non_existent_file = "non_existent_file.txt"
-    result = local_storage.check_if_exists(
-        non_existent_file, local_storage.get_root_path()
-    )
+    result = local_storage.check_if_exists(non_existent_file, "")
     assert result is False
 
 
@@ -145,12 +135,10 @@ def test_download_file(local_storage):
     file_name = "test_file.pkl"
 
     # Upload the test file
-    local_storage.upload_file(test_data, file_name, local_storage.get_root_path())
+    local_storage.upload_file(test_data, file_name, "")
 
     # Download and deserialize the file
-    downloaded_data = local_storage.download_file(
-        file_name, local_storage.get_root_path()
-    )
+    downloaded_data = local_storage.download_file(file_name, "")
 
     # Assert that the downloaded data matches the original data
     assert downloaded_data == test_data
@@ -163,22 +151,20 @@ def test_delete_existing_file(local_storage):
     # Create a test file
     test_file = "test_file.txt"
     test_content = "Test content"
-    local_storage.upload_file(test_content, test_file, local_storage.get_root_path())
+    local_storage.upload_file(test_content, test_file, "")
 
     # Delete the file
-    local_storage.delete_file(test_file, local_storage.get_root_path())
+    local_storage.delete_file(test_file, "")
 
     # Assert that the file no longer exists
     assert not os.path.exists(os.path.join(local_storage.get_root_path(), test_file))
 
     # Verify that check_if_exists returns False
-    assert (
-        local_storage.check_if_exists(test_file, local_storage.get_root_path()) is False
-    )
+    assert local_storage.check_if_exists(test_file, "") is False
 
 
 def test_delete_non_existent_file(local_storage):
     non_existent_file = "non_existent_file.txt"
     with pytest.raises(FileExistsError) as excinfo:
-        local_storage.delete_file(non_existent_file, local_storage.get_root_path())
+        local_storage.delete_file(non_existent_file, "")
     assert str(excinfo.value) == "No existe en la carpeta"

@@ -1,4 +1,4 @@
-::: framework3.utils.skestimator
+::: labchain.utils.skestimator
     options:
       show_root_heading: true
       show_source: true

@@ -1,5 +1,5 @@
 from sklearn import datasets
-from framework3 import (
+from labchain import (
     F1,
     Cached,
     F3Pipeline,
@@ -11,9 +11,9 @@ from framework3 import (
 
 from rich import print
 
-from framework3.base.base_clases import XYData
-from framework3.plugins.optimizer.optuna_optimizer import OptunaOptimizer
-from framework3.plugins.splitter.cross_validation_splitter import KFoldSplitter
+from labchain.base.base_clases import XYData
+from labchain.plugins.optimizer.optuna_optimizer import OptunaOptimizer
+from labchain.plugins.splitter.cross_validation_splitter import KFoldSplitter
 
 
 def test_optuna_pipeline_init_and_fit():

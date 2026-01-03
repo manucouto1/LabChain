@@ -1,11 +1,11 @@
 
 # Classification Filters
 
-::: framework3.plugins.filters.classification
+::: labchain.plugins.filters.classification
 
 ## Overview
 
-The Classification Filters module in framework3 provides a collection of powerful classification algorithms that can be easily integrated into your machine learning pipelines. These filters are designed to work seamlessly with the framework3 ecosystem, providing a consistent interface and enhanced functionality.
+The Classification Filters module in labchain provides a collection of powerful classification algorithms that can be easily integrated into your machine learning pipelines. These filters are designed to work seamlessly with the labchain ecosystem, providing a consistent interface and enhanced functionality.
 
 ## Available Classifiers
 
@@ -16,7 +16,7 @@ The Support Vector Machine (SVM) classifier is implemented in the `ClassifierSVM
 #### Usage
 ```python
 
-from framework3.plugins.filters.classification.svm import ClassifierSVMPlugin
+from labchain.plugins.filters.classification.svm import ClassifierSVMPlugin
 
 svm_classifier = ClassifierSVMPlugin(C=1.0, kernel='rbf', gamma='scale')
 ```
@@ -34,7 +34,7 @@ The K-Nearest Neighbors (KNN) classifier is implemented in the `KnnFilter`. This
 #### Usage
 
 ```python
-from framework3.plugins.filters.classification.knn import KnnFilter
+from labchain.plugins.filters.classification.knn import KnnFilter
 
 knn_classifier = KnnFilter(n_neighbors=5, weights='uniform')
 ```
@@ -49,10 +49,10 @@ knn_classifier = KnnFilter(n_neighbors=5, weights='uniform')
 In this example, we'll demonstrate how to use the Classification Filters with the Iris dataset, showcasing both SVM and KNN classifiers, as well as integration with GridSearchCV.
 
 ```python
-from framework3.plugins.pipelines.gs_cv_pipeline import GridSearchCVPipeline
-from framework3.plugins.filters.classification.svm import ClassifierSVMPlugin
-from framework3.plugins.filters.classification.knn import KnnFilter
-from framework3.base.base_types import XYData
+from labchain.plugins.pipelines.gs_cv_pipeline import GridSearchCVPipeline
+from labchain.plugins.filters.classification.svm import ClassifierSVMPlugin
+from labchain.plugins.filters.classification.knn import KnnFilter
+from labchain.base.base_types import XYData
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 import numpy as np
@@ -113,7 +113,7 @@ print("KNN Accuracy:", knn_accuracy)
 This example demonstrates how to:
 
 1. Load and prepare the Iris dataset
-2. Create XYData objects for use with framework3
+2. Create XYData objects for use with labchain
 3. Set up GridSearchCV pipelines for both SVM and KNN classifiers
 4. Fit the models and make predictions
 5. Evaluate the models using accuracy scores
@@ -132,4 +132,4 @@ This example demonstrates how to:
 
 ## Conclusion
 
-The Classification Filters module in framework3 provides a robust set of tools for tackling various classification tasks. By leveraging these filters in combination with other framework3 components, you can build powerful and efficient machine learning pipelines. The example with the Iris dataset demonstrates how easy it is to use these classifiers and integrate them with GridSearchCV for hyperparameter tuning.
+The Classification Filters module in labchain provides a robust set of tools for tackling various classification tasks. By leveraging these filters in combination with other labchain components, you can build powerful and efficient machine learning pipelines. The example with the Iris dataset demonstrates how easy it is to use these classifiers and integrate them with GridSearchCV for hyperparameter tuning.

@@ -51,7 +51,7 @@ This command will install the latest stable version of LabChain and all its depe
 To verify that LabChain is installed correctly, you can run a simple Python script:
 
 ```python
-from framework3 import __version__
+from labchain import __version__
 
 print(f"LabChain version: {__version__}")
 ```

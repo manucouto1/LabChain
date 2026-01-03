@@ -1,20 +1,20 @@
 import pytest
 from unittest.mock import Mock, patch
-from framework3.container import Container
-from framework3.plugins.ingestion import DatasetManager
-from framework3.base.base_types import XYData
+from labchain.container import Container
+from labchain.plugins.ingestion import DatasetManager
+from labchain.base.base_types import XYData
 
 
 @pytest.fixture
 def mock_local_storage():
-    with patch("framework3.container.LocalStorage") as mock_storage:
+    with patch("labchain.container.LocalStorage") as mock_storage:
         yield mock_storage
 
 
 @pytest.fixture
 def container(mock_local_storage):
     with patch(
-        "framework3.container.Container.storage", new_callable=Mock
+        "labchain.container.Container.storage", new_callable=Mock
     ) as mock_container_storage:
         container = Container()
         container.ds = DatasetManager()
