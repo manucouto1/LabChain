@@ -339,7 +339,7 @@ graph TB
 
 ## Real-World Impact
 
-A [published case study](https://github.com/manucouto1/Temporal-Word-Embeddings-for-Early-Detection) on mental health detection using temporal language analysis demonstrated:
+A [published case study](https://github.com/manucouto1/Temporal-Word-Embeddings-for-Early-Detection-of-Psychological-Disorders-on-Social-Media) on mental health detection using temporal language analysis demonstrated:
 
 - **12+ hours** of computation saved per task through caching
 - **2.5–11 kg CO₂** emissions avoided (conservative estimates)

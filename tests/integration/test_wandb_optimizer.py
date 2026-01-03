@@ -19,7 +19,7 @@ from labchain.plugins.splitter.cross_validation_splitter import KFoldSplitter
 
 
 from labchain.utils.wandb import WandbSweepManager
-from labchain.base import BaseFilter, XYData, BaseMetric
+from labchain.base import BaseFilter, BaseMetric
 import numpy as np
 
 
@@ -63,10 +63,6 @@ class TestWandbOptimizer:
         """Test that Bayesian sweep config is generated correctly."""
 
         pipeline = DummyFilter()
-        scorer = DummyMetric()
-        x = XYData.mock(np.random.rand(100, 10))
-        y = XYData.mock(np.random.rand(100))
-
         manager = WandbSweepManager()
 
         # Generate config (don't actually create sweep)
