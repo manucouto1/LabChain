@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Callable, Type, Optional, TypeVar
 
+from labchain import BaseDatasetManager
 from labchain.plugins.storage.local_storage import LocalStorage
 from labchain.base import BaseFactory
 from labchain.base import BaseFilter, BaseMetric, BasePlugin
@@ -84,6 +85,7 @@ class Container:
     """
 
     storage: BaseStorage = LocalStorage()
+    ds: BaseDatasetManager
     ff: BaseFactory[BaseFilter] = BaseFactory[BaseFilter]()
     pf: BaseFactory[BasePipeline] = BaseFactory[BasePipeline]()
     mf: BaseFactory[BaseMetric] = BaseFactory[BaseMetric]()

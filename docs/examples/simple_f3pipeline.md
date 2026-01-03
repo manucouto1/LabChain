@@ -53,7 +53,7 @@ pipeline = F3Pipeline(
         ),
         ClassifierSVMPlugin()
     ],
-    metrics=[F1()]
+    metrics=[F1("weighted")]
 )
 print(pipeline)
 ```
@@ -138,7 +138,7 @@ pipeline = F3Pipeline(
         ),
         KnnFilter(),
     ],
-    metrics=[F1()],
+    metrics=[F1("weighted")],
 )
 print(pipeline)
 
