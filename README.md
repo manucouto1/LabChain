@@ -74,10 +74,9 @@ pip install framework3
 
 ### Your First Pipeline (2 minutes)
 ```python
-from labchain import Container
-from labchain.pipeline import F3Pipeline
+from labchain import Container, F3Pipeline
 from labchain.plugins.filters import StandardScalerPlugin, KnnFilter
-from labchain.plugins.metrics import F1, Precision, Recall
+from labchain.plugins.metrics import F1, Precission, Recall
 from labchain.base import XYData
 from sklearn.datasets import load_iris
 
@@ -92,7 +91,7 @@ pipeline = F3Pipeline(
         StandardScalerPlugin(),
         KnnFilter(n_neighbors=5)
     ],
-    metrics=[F1(), Precision(), Recall()]
+    metrics=[F1("weighted"), Precission("weighted"), Recall("weighted")]
 )
 
 # Train and evaluate
@@ -101,7 +100,7 @@ predictions = pipeline.predict(X)
 results = pipeline.evaluate(X, y, predictions)
 
 print(results)
-# {'F1': 0.96, 'Precision': 0.96, 'Recall': 0.96}
+# {'F1': 0.95, 'Precision': 0.95, 'Recall': 0.95}
 ```
 
 **That's it!** 🎉 You just built, trained, and evaluated an ML pipeline.
@@ -126,6 +125,7 @@ pipeline = F3Pipeline(
         ClassifierSVMPlugin(kernel='rbf')
     ]
 )
+
 ```
 
 ### 🔄 Smart Caching
@@ -147,7 +147,7 @@ pipeline = F3Pipeline(
 
 ### 📊 Hyperparameter Optimization
 ```python
-from labchain.plugins.optimizers import WandbOptimizer
+from labchain import WandbOptimizer
 
 # Optimize with Weights & Biases
 optimizer = WandbOptimizer(
@@ -192,7 +192,7 @@ predictions = pipeline.predict(data)  # Just works! ✨
 
 ### 🌐 Distributed Processing (Experimental)
 ```python
-from labchain.pipeline import HPCPipeline
+from labchain import HPCPipeline
 
 # Automatic Spark distribution
 pipeline = HPCPipeline(
@@ -211,17 +211,16 @@ pipeline.fit(large_dataset)
 <summary><b>Classification with Cross-Validation</b></summary>
 
 ```python
-from labchain.pipeline import F3Pipeline
-from labchain.plugins.splitters import KFoldSplitter
+from labchain import F3Pipeline, KFoldSplitter
 from labchain.plugins.filters import StandardScalerPlugin, ClassifierSVMPlugin
-from labchain.plugins.metrics import F1, Precision, Recall
+from labchain.plugins.metrics import F1, Precission, Recall
 
 pipeline = F3Pipeline(
     filters=[
         StandardScalerPlugin(),
         ClassifierSVMPlugin(kernel='rbf', C=1.0)
     ],
-    metrics=[F1(), Precision(), Recall()]
+    metrics=[F1(), Precission(), Recall()]
 ).splitter(
     KFoldSplitter(n_splits=5, shuffle=True, random_state=42)
 )
@@ -236,7 +235,7 @@ results = pipeline.evaluate(X_test, y_test, pipeline.predict(X_test))
 <summary><b>Parallel Processing</b></summary>
 
 ```python
-from labchain.pipeline import LocalThreadPipeline
+from labchain import LocalThreadPipeline
 from labchain.plugins.filters import Filter1, Filter2, Filter3
 
 # Process filters in parallel

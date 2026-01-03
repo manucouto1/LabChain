@@ -41,7 +41,7 @@ Let's start with a simple classification pipeline using the Iris dataset.
 ```python
 from labchain import F3Pipeline, XYData
 from labchain.plugins.filters import StandardScalerPlugin, KnnFilter
-from labchain.plugins.metrics import F1, Precision, Recall
+from labchain.plugins.metrics import F1, Precission, Recall
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 
@@ -145,7 +145,7 @@ predictions_2 = pipeline.predict(x_test)
 ### Step 3: Test Different Classifiers with Cached Preprocessing
 
 ```python
-from labchain.plugins.filters import SVMFilter
+from labchain.plugins.filters.classification.svm import ClassifierSVMPlugin
 
 # Change classifier, keep preprocessing cached
 pipeline_svm = F3Pipeline(
@@ -155,7 +155,7 @@ pipeline_svm = F3Pipeline(
             cache_data=True,
             cache_filter=True
         ),
-        SVMFilter(kernel='rbf', C=1.0)  # Different classifier
+        ClassifierSVMPlugin(kernel='rbf', C=1.0)  # Different classifier
     ],
     metrics=[F1(), Precision(), Recall()]
 )
@@ -277,7 +277,7 @@ print(f"Best params: {best_results['best_params']}")
 ### Bayesian Optimization (Efficient)
 
 ```python
-from labchain.plugins.optimizer import OptunaOptimizer
+from labchain.plugins.optimizer.optuna_optimizer import OptunaOptimizer
 
 # Define search space
 knn_optuna = KnnFilter().grid({
@@ -314,7 +314,7 @@ print(f"Optuna best F1: {best_optuna['best_score']:.3f}")
 ### Weights & Biases Integration
 
 ```python
-from labchain.plugins.optimizer import WandbOptimizer
+from labchain.plugins.optimizer.wandb_optimizer import WandbOptimizer
 
 # Track experiments in W&B cloud
 pipeline_wandb = F3Pipeline(
@@ -344,7 +344,7 @@ Let's combine caching, cross-validation, and optimization for a production-grade
 ```python
 from labchain.plugins.filters import Cached
 from labchain.plugins.splitter import StratifiedKFoldSplitter
-from labchain.plugins.optimizer import OptunaOptimizer
+from labchain.plugins.optimizer.optuna_optimizer import OptunaOptimizer
 
 # Configure storage for caching
 Container.storage = LocalStorage('./ml_cache')
@@ -365,7 +365,7 @@ production_pipeline = F3Pipeline(
             'p': [1, 2]
         })
     ],
-    metrics=[F1(), Precision(), Recall()]
+    metrics=[F1(), Precission(), Recall()]
 ).splitter(
     # Robust evaluation
     StratifiedKFoldSplitter(n_splits=5, shuffle=True, random_state=42)

@@ -148,20 +148,18 @@ First, configure a shared storage backend:
 
 === "S3 Storage"
 ```python
-    from labchain import Container
-    from labchain.storage import S3Storage
+    from labchain import Container, S3Storage
 
     # Configure once at startup
     Container.storage = S3Storage(
         bucket="my-ml-models",
-        region="us-east-1"
+        region_name="us-east-1"
     )
 ```
 
 === "Local Storage (Testing)"
 ```python
-    from labchain import Container
-    from labchain.storage import LocalStorage
+    from labchain import Container, LocalStorage
 
     # For local testing/development
     Container.storage = LocalStorage("./shared_cache")
@@ -205,7 +203,7 @@ class DomainSpecificFilter(BaseFilter):
 
 Create a pipeline and serialize its configuration:
 ```python
-from labchain.pipeline import F3Pipeline
+from labchain import F3Pipeline
 from labchain.plugins.filters import StandardScalerPlugin
 import numpy as np
 
@@ -238,8 +236,7 @@ with open('pipeline_config.json', 'w') as f:
 
 On the remote server (without your custom class source files):
 ```python
-from labchain import Container
-from labchain.storage import S3Storage
+from labchain import Container, S3Storage
 from labchain.base import BasePlugin
 import json
 
@@ -347,16 +344,14 @@ class SentimentClassifier(BaseFilter):
 ### Step 2: Configure Storage and Build Pipeline
 ```python
 # train_pipeline.py
-from labchain import Container
-from labchain.storage import S3Storage
-from labchain.pipeline import F3Pipeline
+from labchain import Container, S3Storage, F3Pipeline
 from sentiment_filters import TextPreprocessor, DomainEmbedding, SentimentClassifier
 import json
 
 # Configure shared storage
 Container.storage = S3Storage(
     bucket="my-sentiment-models",
-    region="us-west-2"
+    region_name="us-west-2"
 )
 
 # Build pipeline
@@ -395,8 +390,7 @@ print(f"📝 Config saved to sentiment_pipeline_v1.json")
 ```python
 # api_server.py
 from fastapi import FastAPI
-from labchain import Container
-from labchain.storage import S3Storage
+from labchain import Container, S3Storage
 from labchain.base import BasePlugin, XYData
 import json
 import numpy as np
@@ -406,7 +400,7 @@ app = FastAPI()
 # Configure storage (same as training)
 Container.storage = S3Storage(
     bucket="my-sentiment-models",
-    region="us-west-2"
+    region_name="us-west-2"
 )
 
 # Load pipeline configuration
@@ -438,8 +432,7 @@ async def predict_sentiment(texts: list[str]):
 ### Step 4: Version Management
 ```python
 # version_manager.py
-from labchain import Container
-from labchain.storage import S3Storage
+from labchain import Container, S3Storage
 
 Container.storage = S3Storage(bucket="my-sentiment-models", region="us-west-2")
 
@@ -619,6 +612,7 @@ print(f"Status after push: {status}")  # Should be "synced"
 **Cause**: TypeGuard wrapping interferes with CloudPickle deserialization.
 
 **Solution**: This is handled automatically, but if you encounter issues:
+
 ```python
 # The framework automatically unwraps TypeGuard during recovery
 # If you see issues, report them on GitHub with:
@@ -640,6 +634,7 @@ Register a class for remote injection.
 - `auto_push` (bool): Automatically push to storage on registration. Default: `False`
 
 **Example:**
+
 ```python
 @Container.bind(persist=True, auto_push=True)
 class MyFilter(BaseFilter):
@@ -651,6 +646,7 @@ class MyFilter(BaseFilter):
 Push all registered persistent classes to storage.
 
 **Example:**
+
 ```python
 Container.ppif.push_all()
 ```
@@ -662,6 +658,7 @@ Check sync status of a class.
 **Returns:** `"synced"` | `"out_of_sync"` | `"untracked"`
 
 **Example:**
+
 ```python
 status = Container.pcm.check_status(MyFilter)
 ```
@@ -675,6 +672,7 @@ Get deterministic version hash for a class.
 **Details:** Hash is computed from class bytecode, method signatures, and implementation details.
 
 **Example:**
+
 ```python
 hash = Container.pcm.get_class_hash(MyFilter)
 print(hash[:8])  # First 8 chars
@@ -692,6 +690,7 @@ Retrieve specific version of a class.
 **Returns:** Class object
 
 **Example:**
+
 ```python
 MyFilterV1 = Container.ppif.get_version("MyFilter", "abc123...")
 ```
@@ -708,6 +707,7 @@ Reconstruct instance from serialized configuration.
 **Returns:** Reconstructed instance
 
 **Example:**
+
 ```python
 pipeline = BasePlugin.build_from_dump(config, Container.ppif)
 ```

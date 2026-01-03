@@ -203,11 +203,12 @@ from labchain.plugins.storage import S3Storage
 
 # Configure S3 storage
 Container.storage = S3Storage(
-    bucket_name='my-team-ml-cache',
-    prefix='experiments/',           # Optional: organize by project
-    region='us-east-1',               # AWS region
-    access_key='YOUR_ACCESS_KEY',    # Use env vars in production!
-    secret_key='YOUR_SECRET_KEY'
+    bucket='my-team-ml-cache',
+    region_name='us-east-1',               # AWS region
+    access_key_id='YOUR_ACCESS_KEY',    # Use env vars in production!
+    access_key='YOUR_SECRET_KEY',
+    storage_path='experiments/',
+    endpoint_url="url"
 )
 ```
 
@@ -217,9 +218,9 @@ Container.storage = S3Storage(
 import os
 
 Container.storage = S3Storage(
-    bucket_name=os.getenv('LABCHAIN_BUCKET'),
-    prefix=os.getenv('LABCHAIN_PREFIX', 'experiments/'),
-    region=os.getenv('AWS_REGION', 'us-east-1'),
+    bucket=os.getenv('LABCHAIN_BUCKET'),
+    region_name=os.getenv('AWS_REGION', 'us-east-1'),
+    storage_path=os.getenv('LABCHAIN_PREFIX', 'experiments/'),
     # access_key and secret_key from AWS credentials chain
 )
 ```
@@ -235,8 +236,8 @@ from labchain.plugins.filters import Cached
 
 # Configure shared storage
 Container.storage = S3Storage(
-    bucket_name='team-cache',
-    prefix='mental-health-detection/'
+    bucket='team-cache',
+    storage_path='mental-health-detection/'
 )
 
 # Define pipeline with expensive operation
@@ -264,8 +265,8 @@ from labchain.plugins.filters import Cached
 
 # Same storage configuration
 Container.storage = S3Storage(
-    bucket_name='team-cache',
-    prefix='mental-health-detection/'
+    bucket='team-cache',
+    storage_path='mental-health-detection/'
 )
 
 # Different pipeline, SAME embeddings filter
@@ -304,7 +305,13 @@ filter_c = BERTEmbeddings(model='bert-base', max_length=256)  # Different param
 filter_d = BERTEmbeddings(model='bert-large', max_length=128) # Different param
 ```
 
-## Advanced: TTL and Heartbeat for Race-Free Distributed Caching
+## ⚠️ Advanced: TTL and Heartbeat for Race-Free Distributed Caching
+
+> **Warning**
+>
+> The content below is **experimental**.
+> APIs, behavior, and guarantees may change without notice.
+> Use in production at your own risk.
 
 When multiple processes or machines attempt to cache the same computation simultaneously, race conditions can occur. LabChain provides `CachedWithLocking` with TTL-based expiration and heartbeat-based crash detection to coordinate distributed processes.
 
@@ -371,8 +378,8 @@ from labchain.plugins.filters import CachedWithLocking
 
 # Configure S3 locking storage
 Container.storage = LockingS3Storage(
-    bucket_name='my-team-ml-cache',
-    region='us-east-1',
+    bucket='my-team-ml-cache',
+    region_name='us-east-1',
     access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
     access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
 )

@@ -230,14 +230,14 @@ Build your first pipeline:
 ```python
 from labchain import F3Pipeline, XYData
 from labchain.plugins.filters import StandardScalerPlugin, KnnFilter
-from labchain.plugins.metrics import F1, Precision, Recall
+from labchain.plugins.metrics import F1, Precission, Recall
 
 pipeline = F3Pipeline(
     filters=[
         StandardScalerPlugin(),
         KnnFilter(n_neighbors=5)
     ],
-    metrics=[F1(), Precision(), Recall()]
+    metrics=[F1(), Precission(), Recall()]
 )
 
 pipeline.fit(x_train, y_train)
