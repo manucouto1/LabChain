@@ -66,7 +66,9 @@ class MonoPipeline(ParallelPipeline):
             Start the pipeline execution.
     """
 
-    def __init__(self, filters: Sequence[BaseFilter]):
+    def __init__(
+        self, filters: Sequence[BaseFilter], metrics: Sequence[BaseMetric] = []
+    ):
         """
         Initialize the MonoPipeline.
 
@@ -75,6 +77,7 @@ class MonoPipeline(ParallelPipeline):
         """
         super().__init__(filters=filters)
         self.filters = filters
+        self.metrics = metrics
 
     def fit(
         self, x: XYData, y: Optional[XYData], evaluator: BaseMetric | None = None

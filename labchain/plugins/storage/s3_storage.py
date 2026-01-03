@@ -5,12 +5,10 @@ import sys
 from typing import Any, List
 from botocore.exceptions import ClientError
 from labchain.base import BaseStorage
-from labchain.container import Container
 
 __all__ = ["S3Storage"]
 
 
-@Container.bind()
 class S3Storage(BaseStorage):
     """
     A storage implementation for Amazon S3 to store and retrieve files.

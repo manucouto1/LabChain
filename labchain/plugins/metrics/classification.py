@@ -73,7 +73,6 @@ class F1(BaseMetric):
             The 'average' parameter is passed directly to scikit-learn's f1_score function.
             Refer to scikit-learn's documentation for detailed information on averaging methods.
         """
-        super().__init__(average=average)
         self.average = average
 
     def evaluate(

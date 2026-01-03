@@ -168,13 +168,13 @@ class OptunaOptimizer(BaseOptimizer):
             BaseFilter: The constructed pipeline.
 
         Note:
-            This method uses the Container.pif for dependency injection when building
+            This method uses the Container.ppif for dependency injection when building
             the pipeline components.
         """
         self.get_grid(dumped_pipeline, f)
 
         pipeline: BaseFilter = cast(
-            BaseFilter, BasePlugin.build_from_dump(dumped_pipeline, Container.pif)
+            BaseFilter, BasePlugin.build_from_dump(dumped_pipeline, Container.ppif)
         )
         return pipeline
 

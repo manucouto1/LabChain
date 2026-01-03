@@ -138,7 +138,7 @@ class WandbOptimizer(BaseOptimizer):
 
         # Rebuild pipeline
         pipeline: BaseFilter = cast(
-            BaseFilter, BasePlugin.build_from_dump(config["pipeline"], Container.pif)
+            BaseFilter, BasePlugin.build_from_dump(config["pipeline"], Container.ppif)
         )
         pipeline.verbose(False)
 
@@ -222,7 +222,7 @@ class WandbOptimizer(BaseOptimizer):
         # Rebuild and fit final pipeline
         self.get_grid(winner["pipeline"], winner["filters"])
         self.pipeline = cast(
-            BaseFilter, BasePlugin.build_from_dump(winner["pipeline"], Container.pif)
+            BaseFilter, BasePlugin.build_from_dump(winner["pipeline"], Container.ppif)
         )
 
         print("🎯 Fitting final pipeline...")

@@ -247,7 +247,7 @@ class SequentialPipeline(BasePipeline):
         for sequential processing of filters.
     """
 
-    def _pre_fit(self, x: XYData, y: Optional[XYData]):
+    def _pre_fit(self, x: XYData, y: Optional[XYData] = None):
         """
         Prepare the pipeline for fitting.
 

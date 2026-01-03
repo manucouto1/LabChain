@@ -112,8 +112,8 @@ class LockingLocalStorage(LocalStorage, BaseLockingStorage):
         ```
         """
         super().__init__(storage_path=storage_path)
-        self.locks_dir = Path(self.storage_path) / "locks"
-        self.locks_dir.mkdir(parents=True, exist_ok=True)
+        self._locks_dir = Path(self.storage_path) / "locks"
+        self._locks_dir.mkdir(parents=True, exist_ok=True)
 
     def try_acquire_lock(
         self, lock_name: str, ttl: int = 3600, heartbeat_interval: int | None = 30
@@ -174,7 +174,7 @@ class LockingLocalStorage(LocalStorage, BaseLockingStorage):
                     This helps identify which process holds the lock and when it
                     was acquired, useful for debugging deadlocks or stale locks.
         """
-        lock_path = self.locks_dir / f"{lock_name}.lock"
+        lock_path = self._locks_dir / f"{lock_name}.lock"
 
         # Check if lock exists and is stale
         if lock_path.exists():
@@ -239,7 +239,7 @@ class LockingLocalStorage(LocalStorage, BaseLockingStorage):
                             storage.release_lock("train_model")
         ```
         """
-        lock_path = self.locks_dir / f"{lock_name}.lock"
+        lock_path = self._locks_dir / f"{lock_name}.lock"
 
         try:
             # Read current lock data
@@ -307,7 +307,7 @@ class LockingLocalStorage(LocalStorage, BaseLockingStorage):
                     Always release locks in a finally block to prevent deadlocks,
                     even if an exception occurs during the critical section.
         """
-        lock_path = self.locks_dir / f"{lock_name}.lock"
+        lock_path = self._locks_dir / f"{lock_name}.lock"
         try:
             lock_path.unlink()
             if self._verbose:
@@ -327,7 +327,7 @@ class LockingLocalStorage(LocalStorage, BaseLockingStorage):
         Returns:
             True if lock exists and is valid (not expired), False otherwise.
         """
-        lock_path = self.locks_dir / f"{lock_name}.lock"
+        lock_path = self._locks_dir / f"{lock_name}.lock"
         if not lock_path.exists():
             return False
         return not self._is_lock_stale_or_dead(lock_path)

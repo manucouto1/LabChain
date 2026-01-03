@@ -610,11 +610,10 @@ Cached(filter=preprocessing_step)
 
 You've learned the fundamentals! Explore these resources:
 
-- **[Caching Guide](../start_caching/)** — Deep dive into local and distributed caching
-- **[Architecture](../architecture/)** — Understand LabChain's design
-- **[Examples](../examples/)** — Real-world case studies
-- **[Best Practices](../best_practices/)** — Production-ready patterns
-- **[API Reference](../api/)** — Complete API documentation
+- **[Caching Guide](../start_caching/index.md)** — Deep dive into local and distributed caching
+- **[Architecture](../architecture/index.md)** — Understand LabChain's design
+- **[Examples](../examples/index.md)** — Real-world case studies
+- **[API Reference](../api/index.md)** — Complete API documentation
 
 ## Summary
 

@@ -339,7 +339,7 @@ graph TB
 
 ## Real-World Impact
 
-A [published case study](https://github.com/manucouto1/Temporal-Word-Embeddings-for-Early-Detection) on mental health detection using temporal language analysis demonstrated:
+A [published case study](https://github.com/manucouto1/Temporal-Word-Embeddings-for-Early-Detection-of-Psychological-Disorders-on-Social-Media) on mental health detection using temporal language analysis demonstrated:
 
 - **12+ hours** of computation saved per task through caching
 - **2.5–11 kg CO₂** emissions avoided (conservative estimates)
@@ -414,22 +414,21 @@ LabChain is **actively maintained** and used daily in production research at [Ci
 
 ## Learn More
 
-- **[Quick Start Guide](quick_start/)** — Step-by-step tutorial
-- **[Start Caching](start_caching/)** — Step-by-step tutorial
-- **[Architecture Deep Dive](architecture/)** — Technical details
-- **[Examples](examples/)** — Real-world use cases
-- **[Best Practices](best_practices/)** — Production patterns
-- **[API Reference](api/)** — Complete documentation
+- **[Quick Start Guide](quick_start/index.md)** — Step-by-step tutorial
+- **[Start Caching](start_caching/index.md)** — Step-by-step tutorial
+- **[Architecture Deep Dive](architecture/index.md)** — Technical details
+- **[Examples](examples/index.md)** — Real-world use cases
+- **[API Reference](api/index.md)** — Complete documentation
 
 ## Community
 
 - **GitHub**: [manucouto1/LabChain](https://github.com/manucouto1/LabChain)
 - **Documentation**: [manucouto1.github.io/LabChain](https://manucouto1.github.io/LabChain/)
 - **Paper**: [SoftwareX submission](https://github.com/manucouto1/LabChain) (preprint)
-- **Case Study**: [Mental health detection](https://github.com/manucouto1/Temporal-Word-Embeddings-for-Early-Detection)
+- **Case Study**: [Mental health detection](https://github.com/manucouto1/Temporal-Word-Embeddings-for-Early-Detection-of-Psychological-Disorders-on-Social-Media)
 
 LabChain is licensed under **AGPL-3.0**. Contributions welcome!
 
 ---
 
-**Ready to stop recomputing?** Install `labchain` and start caching. [Get Started →](quick_start/)
+**Ready to stop recomputing?** Install `labchain` and start caching. [Get Started →](quick_start/index.md)

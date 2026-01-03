@@ -841,6 +841,5 @@ From our mental health detection case study:
 
 **Next steps:**
 
-- [Quick Start](../quick_start/) — Basic installation and usage
-- [Architecture](../architecture/) — How LabChain works internally
-- [Best Practices](../best_practices/) — Production-ready patterns
+- [Quick Start](../quick_start/index.md) — Basic installation and usage
+- [Architecture](../architecture/index.md) — How LabChain works internally

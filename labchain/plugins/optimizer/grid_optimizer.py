@@ -59,12 +59,11 @@ class GridOptimizer(BaseOptimizer):
         scorer: BaseMetric,
         pipeline: BaseFilter | None = None,
     ):
-        super().__init__(pipeline=pipeline, scorer=scorer)
         self.scorer: BaseMetric = scorer
         self.pipeline: Optional[BaseFilter] = None
 
-        self.best_params: Dict[str, Any] = {}
-        self.best_score: float = float("-inf")
+        self._best_params: Dict[str, Any] = {}
+        self._best_score: float = float("-inf")
         self._grid: Dict[str, Any] = {}
         self._results: pd.DataFrame | None = None
 
@@ -143,7 +142,7 @@ class GridOptimizer(BaseOptimizer):
         self.pipeline = pipeline
         self.pipeline.verbose(False)
 
-    def fit(self, x: XYData, y: Optional[XYData]):
+    def fit(self, x: XYData, y: Optional[XYData]) -> None | float | dict:
         """
         Perform the grid search and fit the best pipeline.
 
@@ -175,7 +174,7 @@ class GridOptimizer(BaseOptimizer):
             self.get_from_grid(dumped_pipeline, param_dict)
 
             pipeline: BaseFilter = cast(
-                BaseFilter, BasePlugin.build_from_dump(dumped_pipeline, Container.pif)
+                BaseFilter, BasePlugin.build_from_dump(dumped_pipeline, Container.ppif)
             )
 
             pipeline.verbose(False)
@@ -202,12 +201,12 @@ class GridOptimizer(BaseOptimizer):
             "score", ascending=not self.scorer.higher_better
         )
 
-        self.best_params = self._results.iloc[0].drop("score").to_dict()
+        self._best_params = self._results.iloc[0].drop("score").to_dict()
 
-        self.get_from_grid(dumped_pipeline, self.best_params)
+        self.get_from_grid(dumped_pipeline, self._best_params)
 
         self.pipeline = cast(
-            BaseFilter, BasePlugin.build_from_dump(dumped_pipeline, Container.pif)
+            BaseFilter, BasePlugin.build_from_dump(dumped_pipeline, Container.ppif)
         )
 
         return self.pipeline.unwrap().fit(x, y)

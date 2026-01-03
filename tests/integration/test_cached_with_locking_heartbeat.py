@@ -19,15 +19,15 @@ class VerySlowFilter(BaseFilter):
         super().__init__()
         self.total_steps = total_steps
         self.step_duration = step_duration
-        self.trained = False
-        self.steps_completed = 0
+        self._trained = False
+        self._steps_completed = 0
 
     def fit(self, x, y):
         """Simulate slow training with multiple steps."""
         for i in range(self.total_steps):
             time.sleep(self.step_duration)
-            self.steps_completed = i + 1
-        self.trained = True
+            self._steps_completed = i + 1
+        self._trained = True
 
     def predict(self, x):
         """Slow prediction."""
@@ -69,13 +69,13 @@ class TestCachedWithHeartbeat:
         # Train (takes ~2.5 seconds, should send ~2 heartbeats)
         cached.fit(x, y)
 
-        assert filter_obj.trained is True
-        assert filter_obj.steps_completed == 5
+        assert filter_obj._trained is True
+        assert filter_obj._steps_completed == 5
 
     def test_auto_heartbeat_during_predict(self, temp_storage):
         """Test that heartbeat is sent during predict."""
         filter_obj = VerySlowFilter(total_steps=1, step_duration=0.1)
-        filter_obj.trained = True  # Skip training
+        filter_obj._trained = True  # Skip training
 
         cached = CachedWithLocking(
             filter=filter_obj,
@@ -119,7 +119,7 @@ class TestCachedWithHeartbeat:
             cached.fit(x, y)
             elapsed = time.time() - start
 
-            results_queue.put((process_id, "trained", elapsed, filter_obj.trained))
+            results_queue.put((process_id, "trained", elapsed, filter_obj._trained))
 
         def try_concurrent_train(process_id, storage_path, results_queue):
             """Process that tries to train concurrently."""
@@ -144,7 +144,7 @@ class TestCachedWithHeartbeat:
             cached.fit(x, y)
             elapsed = time.time() - start
 
-            results_queue.put((process_id, "waited", elapsed, filter_obj.trained))
+            results_queue.put((process_id, "waited", elapsed, filter_obj._trained))
 
         # Start both processes
         p1 = Process(
@@ -219,7 +219,7 @@ class TestCachedWithHeartbeat:
             cached.fit(x, y)
             elapsed = time.time() - start
 
-            results_queue.put(("recovered", elapsed, filter_obj.trained))
+            results_queue.put(("recovered", elapsed, filter_obj._trained))
 
         # Start processes
         crasher = Process(
@@ -263,7 +263,7 @@ class TestCachedWithHeartbeat:
         # Should work without heartbeat
         cached.fit(x, y)
 
-        assert filter_obj.trained is True
+        assert filter_obj._trained is True
 
     def test_heartbeat_interval_auto_calculation(self, temp_storage):
         """Test that heartbeat interval is auto-calculated from TTL."""
@@ -286,7 +286,7 @@ class TestCachedWithHeartbeat:
         y = XYData.mock(np.array([4, 5, 6]))
 
         cached.fit(x, y)
-        assert filter_obj.trained is True
+        assert filter_obj._trained is True
 
 
 class TestBackoffWaiting:

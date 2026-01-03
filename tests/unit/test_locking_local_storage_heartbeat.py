@@ -40,7 +40,7 @@ class TestHeartbeatBasics:
         assert result is True
 
         # Read lock file and verify heartbeat fields
-        lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+        lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
         with open(lock_file, "r") as f:
             lock_data = json.load(f)
 
@@ -64,7 +64,7 @@ class TestHeartbeatBasics:
         assert result is True
 
         # Read lock file
-        lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+        lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
         with open(lock_file, "r") as f:
             lock_data = json.load(f)
 
@@ -81,7 +81,7 @@ class TestHeartbeatBasics:
         locking_storage.try_acquire_lock(lock_name, ttl=3600, heartbeat_interval=30)
 
         # Get initial heartbeat
-        lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+        lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
         with open(lock_file, "r") as f:
             initial_data = json.load(f)
         initial_heartbeat = initial_data["last_heartbeat"]
@@ -118,7 +118,7 @@ class TestHeartbeatBasics:
     def test_update_heartbeat_fails_if_not_owner(self, locking_storage):
         """Test that updating heartbeat fails if process doesn't own lock."""
         lock_name = "other_owner_lock"
-        lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+        lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
 
         # Create lock owned by another process
         lock_data = {
@@ -148,7 +148,7 @@ class TestHeartbeatBasics:
 
         locking_storage.try_acquire_lock(lock_name, ttl=3600, heartbeat_interval=1)
 
-        lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+        lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
         heartbeats = []
 
         # Collect multiple heartbeats
@@ -185,7 +185,7 @@ class TestHeartbeatDeadLockDetection:
     def test_dead_lock_with_old_heartbeat_is_stale(self, locking_storage):
         """Test that lock with old heartbeat is detected as dead."""
         lock_name = "dead_heartbeat_lock"
-        lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+        lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
 
         # Create lock with old heartbeat (process appears dead)
         heartbeat_interval = 10
@@ -213,7 +213,7 @@ class TestHeartbeatDeadLockDetection:
     def test_lock_with_recent_heartbeat_cannot_be_stolen(self, locking_storage):
         """Test that lock with recent heartbeat cannot be stolen."""
         lock_name = "active_heartbeat_lock"
-        lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+        lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
 
         # Create lock with recent heartbeat
         lock_data = {
@@ -241,7 +241,7 @@ class TestHeartbeatDeadLockDetection:
     def test_heartbeat_detection_faster_than_ttl(self, locking_storage):
         """Test that heartbeat detects dead process faster than TTL."""
         lock_name = "fast_detection_lock"
-        lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+        lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
 
         # Create lock with long TTL but dead heartbeat
         lock_data = {
@@ -487,7 +487,7 @@ class TestHeartbeatEdgeCases:
     def test_heartbeat_larger_than_ttl(self, locking_storage):
         """Test that TTL takes precedence when heartbeat_interval > TTL."""
         lock_name = "ttl_precedence_lock"
-        lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+        lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
 
         # Create lock where heartbeat interval is larger than TTL
         lock_data = {
@@ -512,7 +512,7 @@ class TestHeartbeatEdgeCases:
     def test_corrupted_heartbeat_data(self, locking_storage):
         """Test handling of corrupted heartbeat fields."""
         lock_name = "corrupted_heartbeat_lock"
-        lock_file = locking_storage.locks_dir / f"{lock_name}.lock"
+        lock_file = locking_storage._locks_dir / f"{lock_name}.lock"
 
         # Create lock with invalid heartbeat data
         lock_data = {

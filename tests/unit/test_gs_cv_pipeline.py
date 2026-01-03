@@ -82,6 +82,8 @@ def test_grid_search_cv_pipeline_with_multiple_filters():
 
     # Assertions
     assert isinstance(grid_search._clf, GridSearchCV)
+
+    print(grid_search._clf.cv_results_["params"])
     assert len(grid_search._clf.cv_results_["params"]) == 2
 
     assert grid_search._clf.best_params_ in [
