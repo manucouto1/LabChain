@@ -4,7 +4,7 @@ import pytest
 import boto3
 import json
 import time
-from moto import mock_s3
+from moto import mock_aws
 
 from labchain.plugins.storage import LockingS3Storage
 
@@ -12,7 +12,7 @@ from labchain.plugins.storage import LockingS3Storage
 @pytest.fixture
 def s3_client():
     """Fixture that provides a mocked S3 client."""
-    with mock_s3():
+    with mock_aws():
         client = boto3.client(
             "s3",
             region_name="us-east-1",
@@ -267,7 +267,7 @@ class TestS3HeartbeatEdgeCases:
 
     def test_s3_heartbeat_with_prefix(self):
         """Test S3 heartbeat works with storage prefix."""
-        with mock_s3():
+        with mock_aws():
             client = boto3.client("s3", region_name="us-east-1")
             client.create_bucket(Bucket="test-bucket")
 
