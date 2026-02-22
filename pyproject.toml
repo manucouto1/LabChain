@@ -65,8 +65,8 @@ dl = ["torch", "transformers", "sentence-transformers"]
 nlp = ["nltk", "gensim"]
 tracking = ["wandb", "optuna"]
 spark = ["pyspark"]
-aws = ["boto3", "moto", "fastapi"]
-dev = ["pytest", "pytest-mock", "moto", "fastapi", "wandb", "optuna"]
+aws = ["boto3", "fastapi"]
+dev = ["pytest", "pytest-mock", "moto"]
 
 
 
