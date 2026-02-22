@@ -68,8 +68,39 @@ LabChain is a **production-ready ML experimentation framework** that combines th
 ## 🚀 Quick Start
 
 ### Installation
+
+LabChain uses optional dependency groups so you only install what you need.
+
+**Core only** (pipeline engine, caching, serialization):
 ```bash
 pip install framework3
+```
+
+**Common combinations:**
+```bash
+# Classical ML (pandas, scikit-learn, scipy)
+pip install "framework3[data]"
+
+# Deep learning (PyTorch, Transformers, Sentence-Transformers)
+pip install "framework3[dl]"
+
+# NLP (NLTK, Gensim)
+pip install "framework3[nlp]"
+
+# Experiment tracking & optimization (W&B, Optuna)
+pip install "framework3[tracking]"
+
+# Distributed processing (PySpark)
+pip install "framework3[spark]"
+
+# Cloud storage & serving (boto3, FastAPI)
+pip install "framework3[aws]"
+
+# Mix and match
+pip install "framework3[data,dl,tracking]"
+
+# Everything
+pip install "framework3[data,dl,nlp,tracking,spark,aws]"
 ```
 
 ### Your First Pipeline (2 minutes)
@@ -396,8 +427,11 @@ We ❤️ contributions! Here's how you can help:
 git clone https://github.com/manucouto1/LabChain.git
 cd LabChain
 
-# Install dependencies
-pip install -r requirements.txt
+# Install with dev dependencies and the extras you need
+pip install -e ".[dev,data,dl,nlp,tracking,spark,aws]"
+
+# Or with Poetry
+poetry install -E dev -E data -E dl -E nlp -E tracking -E spark -E aws
 
 # Run tests
 pytest tests/

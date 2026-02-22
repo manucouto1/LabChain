@@ -8,11 +8,19 @@ This comprehensive guide demonstrates LabChain's core capabilities through pract
 
 ## Installation
 
-Install LabChain via pip:
+Install LabChain with the extras you need. The examples in this guide use classical ML and optimization features:
 
 ```bash
-pip install framework3
+pip install "framework3[data,tracking]"
 ```
+
+For the full feature set:
+
+```bash
+pip install "framework3[data,dl,nlp,tracking,spark,aws]"
+```
+
+See the [Installation Guide](../installation/index.md) for the complete list of optional extras.
 
 Verify the installation:
 
