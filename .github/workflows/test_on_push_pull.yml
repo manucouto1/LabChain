@@ -28,7 +28,6 @@ jobs:
         curl -sSL https://install.python-poetry.org | python3 -
         poetry lock
         poetry install --no-root --extras "spark dl data nlp tracking aws dev"
-        poetry install --editable .
     - name: Run tests
       run: |
         poetry run pytest tests/ --ignore tests/integration/test_wandb_optimizer.py --cov=framework3 --cov-report=xml
