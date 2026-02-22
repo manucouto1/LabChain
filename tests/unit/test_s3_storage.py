@@ -5,6 +5,7 @@ import io
 
 from moto import mock_s3
 
+
 from labchain.plugins.storage import S3Storage
 
 

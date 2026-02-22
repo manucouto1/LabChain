@@ -25,5 +25,8 @@ jobs:
           path: .cache
           restore-keys: |
             mkdocs-material-
-      - run: pip install "IPython<9.0" "ipykernel<7.0" "mkdocs<2.0" "mkdocs-material<10" "mkdocstrings[python]<0.24" "mkdocs-bibtex<0.9" "mkdocs-mermaid2-plugin<0.8" "mkdocs-jupyter<0.11"
-      - run: mkdocs gh-deploy --force
+      - run: |
+          pip install "IPython<9" "ipykernel<7"
+          pip install "mkdocs<2.0" "mkdocs-material<10"
+          pip install "mkdocstrings[python]<0.23" "mkdocs-bibtex<0.9" "mkdocs-mermaid2-plugin<0.8" "mkdocs-jupyter<0.11"
+          mkdocs gh-deploy --force
