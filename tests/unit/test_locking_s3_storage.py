@@ -8,6 +8,7 @@ from moto import mock_s3
 from labchain.plugins.storage import LockingS3Storage
 
 
+
 @pytest.fixture
 def s3_client():
     """Fixture that provides a mocked S3 client."""
