@@ -1,0 +1,7 @@
+/* Reduce el tamaño de letra de todo lo que esté en bloques <pre> que vengan de Rich */
+.jp-Cell-outputWrapper {
+    font-size: 0.68em !important;
+    line-height: 1.0;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
