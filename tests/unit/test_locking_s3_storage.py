@@ -4,14 +4,14 @@ import pytest
 import boto3
 import json
 import time
-from moto import mock_aws
+from moto import mock_s3
 from labchain.plugins.storage import LockingS3Storage
 
 
 @pytest.fixture
 def s3_client():
     """Fixture that provides a mocked S3 client."""
-    with mock_aws():
+    with mock_s3():
         client = boto3.client(
             "s3",
             region_name="us-east-1",
@@ -47,7 +47,7 @@ class TestLockingS3StorageBasics:
 
     def test_initialization_with_prefix(self):
         """Test initialization with storage prefix."""
-        with mock_aws():
+        with mock_s3():
             client = boto3.client("s3", region_name="us-east-1")
             client.create_bucket(Bucket="test-bucket")
 
@@ -348,7 +348,7 @@ class TestLockingS3StorageIntegration:
 
     def test_storage_with_prefix(self):
         """Test that locks work correctly with storage prefix."""
-        with mock_aws():
+        with mock_s3():
             client = boto3.client("s3", region_name="us-east-1")
             client.create_bucket(Bucket="test-bucket")
 
