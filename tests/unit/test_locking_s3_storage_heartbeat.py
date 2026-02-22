@@ -262,7 +262,6 @@ class TestS3HeartbeatWithBackoff:
         # Should be quick (not waiting for full TTL)
         assert elapsed < 10.0
 
-
 class TestS3HeartbeatEdgeCases:
     """Test S3 heartbeat edge cases."""
 
